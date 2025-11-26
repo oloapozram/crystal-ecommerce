@@ -1,0 +1,196 @@
+{
+  "brand": {
+    "name": "Crystal Essence",
+    "tagline": "Align Your Energy with Nature's Wisdom",
+    "logo_path": "/media/brand/logo.svg"
+  },
+  "colors": {
+    "primary": "#8B5CF6",
+    "primaryHover": "#7C3AED",
+    "primaryLight": "#A78BFA",
+    "primaryDark": "#6D28D9",
+    "secondary": "#EC4899",
+    "secondaryHover": "#DB2777",
+    "secondaryLight": "#F472B6",
+    "secondaryDark": "#BE185D",
+    "accent": "#06B6D4",
+    "accentHover": "#0891B2",
+    "accentLight": "#22D3EE",
+    "accentDark": "#0E7490",
+    "earth": "#78716C",
+    "background": "#FAFAF9",
+    "backgroundDark": "#1C1917",
+    "backgroundAlt": "#F5F5F4",
+    "text": "#1C1917",
+    "textLight": "#78716C",
+    "textInverse": "#FAFAF9",
+    "success": "#10B981",
+    "successLight": "#34D399",
+    "warning": "#F59E0B",
+    "warningLight": "#FBBF24",
+    "error": "#EF4444",
+    "errorLight": "#F87171",
+    "elementColors": {
+      "wood": "#10B981",
+      "woodLight": "#34D399",
+      "woodDark": "#059669",
+      "fire": "#EF4444",
+      "fireLight": "#F87171",
+      "fireDark": "#DC2626",
+      "earth": "#F59E0B",
+      "earthLight": "#FBBF24",
+      "earthDark": "#D97706",
+      "metal": "#6B7280",
+      "metalLight": "#9CA3AF",
+      "metalDark": "#4B5563",
+      "water": "#3B82F6",
+      "waterLight": "#60A5FA",
+      "waterDark": "#2563EB"
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "heading": "'Cormorant Garamond', serif",
+      "body": "'Inter', sans-serif",
+      "accent": "'Cinzel', serif",
+      "mono": "'Fira Code', monospace"
+    },
+    "fontSize": {
+      "xs": "0.75rem",
+      "sm": "0.875rem",
+      "base": "1rem",
+      "lg": "1.125rem",
+      "xl": "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "1.875rem",
+      "4xl": "2.25rem",
+      "5xl": "3rem",
+      "6xl": "3.75rem"
+    },
+    "fontWeight": {
+      "light": 300,
+      "normal": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700,
+      "extrabold": 800
+    },
+    "lineHeight": {
+      "tight": 1.25,
+      "normal": 1.5,
+      "relaxed": 1.75,
+      "loose": 2
+    }
+  },
+  "spacing": {
+    "scale": "relaxed",
+    "baseUnit": "0.25rem",
+    "container": {
+      "xs": "20rem",
+      "sm": "24rem",
+      "md": "28rem",
+      "lg": "32rem",
+      "xl": "36rem",
+      "2xl": "42rem",
+      "3xl": "48rem",
+      "4xl": "56rem",
+      "5xl": "64rem",
+      "6xl": "72rem",
+      "7xl": "80rem"
+    }
+  },
+  "borderRadius": {
+    "none": "0",
+    "sm": "0.25rem",
+    "md": "0.5rem",
+    "lg": "0.75rem",
+    "xl": "1rem",
+    "2xl": "1.5rem",
+    "3xl": "2rem",
+    "full": "9999px"
+  },
+  "shadows": {
+    "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+    "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+    "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+    "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+    "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+    "inner": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)",
+    "glow": {
+      "wood": "0 0 20px rgba(16, 185, 129, 0.3)",
+      "fire": "0 0 20px rgba(239, 68, 68, 0.3)",
+      "earth": "0 0 20px rgba(245, 158, 11, 0.3)",
+      "metal": "0 0 20px rgba(107, 114, 128, 0.3)",
+      "water": "0 0 20px rgba(59, 130, 246, 0.3)"
+    }
+  },
+  "animation": {
+    "duration": {
+      "fast": "150ms",
+      "normal": "300ms",
+      "slow": "500ms",
+      "slower": "1000ms"
+    },
+    "easing": {
+      "default": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "in": "cubic-bezier(0.4, 0, 1, 1)",
+      "out": "cubic-bezier(0, 0, 0.2, 1)",
+      "inOut": "cubic-bezier(0.4, 0, 0.2, 1)"
+    }
+  },
+  "breakpoints": {
+    "sm": "640px",
+    "md": "768px",
+    "lg": "1024px",
+    "xl": "1280px",
+    "2xl": "1536px"
+  },
+  "algorithmicArt": {
+    "wood": {
+      "type": "organic_growth",
+      "particles": 3000,
+      "colors": ["#10B981", "#34D399", "#6EE7B7"],
+      "movement": "branching",
+      "speed": 0.5,
+      "description": "Branching growth patterns resembling trees and vines"
+    },
+    "fire": {
+      "type": "flow_field",
+      "particles": 5000,
+      "colors": ["#EF4444", "#F97316", "#FBBF24"],
+      "movement": "turbulent",
+      "speed": 0.8,
+      "description": "Dynamic flow field with flame-like turbulence"
+    },
+    "earth": {
+      "type": "particle_grid",
+      "particles": 2000,
+      "colors": ["#F59E0B", "#D97706", "#92400E"],
+      "movement": "stable",
+      "speed": 0.2,
+      "description": "Stable grid patterns with subtle shifting like tectonic plates"
+    },
+    "metal": {
+      "type": "geometric_pattern",
+      "particles": 1500,
+      "colors": ["#6B7280", "#9CA3AF", "#D1D5DB"],
+      "movement": "crystalline",
+      "speed": 0.3,
+      "description": "Sharp geometric patterns resembling metal crystals"
+    },
+    "water": {
+      "type": "wave_pattern",
+      "particles": 4000,
+      "colors": ["#3B82F6", "#0EA5E9", "#38BDF8"],
+      "movement": "flowing",
+      "speed": 0.6,
+      "description": "Flowing wave patterns with ripple effects"
+    }
+  },
+  "accessibility": {
+    "focusRing": "2px solid #8B5CF6",
+    "focusRingOffset": "2px",
+    "minContrastRatio": 4.5,
+    "reducedMotion": true
+  }
+}

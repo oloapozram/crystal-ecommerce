@@ -1,0 +1,88 @@
+{
+  "project": {
+    "name": "Crystal E-Commerce Platform",
+    "description": "Modern e-commerce + inventory + AI content system for crystal merchandise with Bazi metaphysical matching",
+    "version": "1.0.0",
+    "tech_stack": ["Next.js 15", "MySQL", "Prisma", "Tailwind CSS", "Vercel AI SDK", "p5.js"]
+  },
+  "superpowers": {
+    "enabled": true,
+    "required_skills": [
+      "superpowers:using-superpowers",
+      "superpowers:brainstorming",
+      "superpowers:writing-plans",
+      "superpowers:executing-plans",
+      "superpowers:test-driven-development",
+      "superpowers:systematic-debugging",
+      "superpowers:verification-before-completion",
+      "superpowers:requesting-code-review",
+      "superpowers:using-git-worktrees"
+    ],
+    "workflow_rules": [
+      "Always use brainstorming skill before coding new features",
+      "Use TDD for all business logic (Bazi calculations, COGS, matching algorithms)",
+      "Verify all AI-generated content against RAG knowledge base",
+      "Request code review before merging major features"
+    ]
+  },
+  "plugins": {
+    "theme_factory": {
+      "enabled": true,
+      "config_file": "theme-config.json",
+      "description": "Auto-applies crystal brand colors/fonts to all components"
+    },
+    "algorithmic_art": {
+      "enabled": true,
+      "library": "p5.js",
+      "use_cases": [
+        "Product card backgrounds (element-based flow fields)",
+        "Product detail hero sections",
+        "Admin dashboard accents"
+      ],
+      "description": "Generative art based on Bazi elements"
+    }
+  },
+  "development": {
+    "root_path": "C:\\xampp7\\htdocs\\crystal",
+    "database": {
+      "type": "MySQL",
+      "host": "localhost",
+      "port": 3306,
+      "name": "crystal_ecommerce"
+    },
+    "ai_providers": {
+      "anthropic": {
+        "model": "claude-3-5-sonnet-20241022",
+        "use_cases": ["Bazi selling copy (RAG)", "Video edit prompts"]
+      }
+    }
+  },
+  "business_logic": {
+    "payment_methods": {
+      "note": "NO merchant checkout integration. Manual payment processing only.",
+      "accepted_methods": [
+        "Wire transfer",
+        "PayPal (friends & family, non-merchant)",
+        "GCash",
+        "Bank transfer"
+      ],
+      "checkout_flow": "Contact form → Admin receives inquiry → Manual payment instructions sent via email"
+    },
+    "inventory": {
+      "cogs_calculation": "Weighted average from all purchases",
+      "markup_default": 40,
+      "quality_tiers": ["normal", "good", "high"]
+    },
+    "bazi_system": {
+      "accuracy_requirement": "CRITICAL - No hallucinations allowed",
+      "rag_knowledge_base": "lib/bazi-knowledge/",
+      "human_verification": "Required for all AI-generated Bazi content before publishing"
+    }
+  },
+  "documentation": {
+    "design_docs": "docs/plans/",
+    "reference": [
+      "docs/plans/2025-11-26-crystal-ecommerce-design.md"
+    ]
+  }
+}
