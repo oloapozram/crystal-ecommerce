@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: 'Inter', sans-serif;
+    --font-cormorant: 'Cormorant Garamond', serif;
+    --font-cinzel: 'Cinzel', serif;
+  }
+}
