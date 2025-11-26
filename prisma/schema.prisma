@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Supplier {
+  id            Int       @id @default(autoincrement())
+  name          String    @unique
+  contactEmail  String?   @map("contact_email")
+  contactPhone  String?   @map("contact_phone")
+  notes         String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  purchases     InventoryPurchase[]
+
+  @@map("suppliers")
+}
+
+model Product {
+  id                    Int       @id @default(autoincrement())
+  baseName              String    @map("base_name")
+  sizeMm                Float     @map("size_mm")
+  qualityGrade          String    @map("quality_grade") @default("NORMAL")
+  sku                   String    @unique
+  baziElement           String?   @map("bazi_element")
+  metaphysicalProperties String?  @map("metaphysical_properties")
+  description           String?
+  isActive              Boolean   @default(true) @map("is_active")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  purchases             InventoryPurchase[]
+  stock                 InventoryStock?
+  mediaFiles            MediaFile[]
+  aiContent             AiGeneratedContent[]
+
+  @@index([baziElement])
+  @@index([qualityGrade])
+  @@index([isActive])
+  @@map("products")
+}
+
+model InventoryPurchase {
+  id                Int       @id @default(autoincrement())
+  productId         Int       @map("product_id")
+  supplierId        Int       @map("supplier_id")
+  quantityPurchased Int       @map("quantity_purchased")
+  weightGrams       Float     @map("weight_grams")
+  costTotal         Float     @map("cost_total")
+  markupPercentage  Float     @map("markup_percentage") @default(40.00)
+  qualityRating     Int?      @map("quality_rating")
+  purchaseDate      DateTime  @map("purchase_date")
+  notes             String?
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  supplier          Supplier  @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+
+  @@index([productId])
+  @@index([supplierId])
+  @@index([purchaseDate])
+  @@map("inventory_purchases")
+}
+
+model InventoryStock {
+  id                   Int       @id @default(autoincrement())
+  productId            Int       @unique @map("product_id")
+  quantityAvailable    Int       @default(0) @map("quantity_available")
+  weightGramsAvailable Float     @default(0) @map("weight_grams_available")
+  avgCostPerGram       Float?    @map("avg_cost_per_gram")
+  lastRestockDate      DateTime? @map("last_restock_date")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  product              Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("inventory_stock")
+}
+
+model MediaFile {
+  id            Int       @id @default(autoincrement())
+  productId     Int       @map("product_id")
+  filePath      String    @map("file_path")
+  fileType      String    @map("file_type")
+  isPrimary     Boolean   @default(false) @map("is_primary")
+  platformTags  String?   @map("platform_tags")
+  displayOrder  Int       @default(0) @map("display_order")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@map("media_files")
+}
+
+model AiGeneratedContent {
+  id                 Int       @id @default(autoincrement())
+  productId          Int       @map("product_id")
+  contentType        String    @map("content_type")
+  userBaziChartHash  String?   @map("user_bazi_chart_hash")
+  platform           String?
+  generatedContent   String    @map("generated_content")
+  sourceFactsUsed    String?   @map("source_facts_used")
+  confidenceScore    Float?    @map("confidence_score")
+  humanVerified      Boolean   @default(false) @map("human_verified")
+  createdAt          DateTime  @default(now()) @map("created_at")
+
+  product            Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, contentType])
+  @@index([humanVerified])
+  @@map("ai_generated_content")
+}
