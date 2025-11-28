@@ -1,0 +1,174 @@
+{
+  "description": "Chinese Zodiac compatibility rules for Bazi matching",
+  "animals": {
+    "Rat": {
+      "element_pairs": ["water", "metal"],
+      "best_matches": ["Dragon", "Monkey", "Ox"],
+      "good_matches": ["Rat", "Pig", "Snake"],
+      "neutral_matches": ["Tiger", "Rabbit"],
+      "challenging_matches": ["Dog", "Goat"],
+      "conflict": "Horse",
+      "characteristics": "Intelligent, adaptable, charming, resourceful"
+    },
+    "Ox": {
+      "element_pairs": ["earth", "water"],
+      "best_matches": ["Snake", "Rooster", "Rat"],
+      "good_matches": ["Ox", "Pig"],
+      "neutral_matches": ["Monkey", "Dragon"],
+      "challenging_matches": ["Tiger", "Dog"],
+      "conflict": "Goat",
+      "characteristics": "Diligent, reliable, strong, determined"
+    },
+    "Tiger": {
+      "element_pairs": ["wood", "fire"],
+      "best_matches": ["Horse", "Dog", "Pig"],
+      "good_matches": ["Dragon", "Goat"],
+      "neutral_matches": ["Rabbit", "Rooster"],
+      "challenging_matches": ["Ox", "Tiger"],
+      "conflict": "Monkey",
+      "characteristics": "Brave, confident, competitive, unpredictable"
+    },
+    "Rabbit": {
+      "element_pairs": ["wood", "yin"],
+      "best_matches": ["Goat", "Pig", "Dog"],
+      "good_matches": ["Rabbit", "Dragon", "Snake"],
+      "neutral_matches": ["Tiger", "Monkey"],
+      "challenging_matches": ["Rat", "Horse"],
+      "conflict": "Rooster",
+      "characteristics": "Gentle, compassionate, artistic, cautious"
+    },
+    "Dragon": {
+      "element_pairs": ["earth", "water"],
+      "best_matches": ["Rat", "Monkey", "Rooster"],
+      "good_matches": ["Tiger", "Rabbit", "Horse"],
+      "neutral_matches": ["Ox", "Goat"],
+      "challenging_matches": ["Dragon", "Pig"],
+      "conflict": "Dog",
+      "characteristics": "Charismatic, energetic, ambitious, powerful"
+    },
+    "Snake": {
+      "element_pairs": ["fire", "earth"],
+      "best_matches": ["Ox", "Rooster", "Dragon"],
+      "good_matches": ["Rat", "Rabbit", "Goat"],
+      "neutral_matches": ["Snake", "Horse"],
+      "challenging_matches": ["Monkey", "Dog"],
+      "conflict": "Pig",
+      "characteristics": "Wise, intuitive, mysterious, elegant"
+    },
+    "Horse": {
+      "element_pairs": ["fire", "earth"],
+      "best_matches": ["Tiger", "Goat", "Dog"],
+      "good_matches": ["Dragon", "Snake", "Monkey"],
+      "neutral_matches": ["Rabbit", "Rooster"],
+      "challenging_matches": ["Horse", "Ox"],
+      "conflict": "Rat",
+      "characteristics": "Energetic, independent, warm-hearted, enthusiastic"
+    },
+    "Goat": {
+      "element_pairs": ["earth", "fire"],
+      "best_matches": ["Rabbit", "Horse", "Pig"],
+      "good_matches": ["Tiger", "Snake", "Goat"],
+      "neutral_matches": ["Dragon", "Monkey"],
+      "challenging_matches": ["Rat", "Rooster"],
+      "conflict": "Ox",
+      "characteristics": "Creative, gentle, compassionate, calm"
+    },
+    "Monkey": {
+      "element_pairs": ["metal", "water"],
+      "best_matches": ["Rat", "Dragon", "Snake"],
+      "good_matches": ["Horse", "Goat", "Dog"],
+      "neutral_matches": ["Rabbit", "Rooster"],
+      "challenging_matches": ["Monkey", "Pig"],
+      "conflict": "Tiger",
+      "characteristics": "Clever, curious, mischievous, inventive"
+    },
+    "Rooster": {
+      "element_pairs": ["metal", "earth"],
+      "best_matches": ["Ox", "Snake", "Dragon"],
+      "good_matches": ["Monkey", "Pig"],
+      "neutral_matches": ["Tiger", "Horse"],
+      "challenging_matches": ["Rooster", "Goat"],
+      "conflict": "Rabbit",
+      "characteristics": "Observant, hardworking, courageous, confident"
+    },
+    "Dog": {
+      "element_pairs": ["earth", "metal"],
+      "best_matches": ["Tiger", "Rabbit", "Horse"],
+      "good_matches": ["Monkey", "Pig", "Snake"],
+      "neutral_matches": ["Ox", "Goat"],
+      "challenging_matches": ["Dog", "Rooster"],
+      "conflict": "Dragon",
+      "characteristics": "Loyal, honest, responsible, protective"
+    },
+    "Pig": {
+      "element_pairs": ["water", "wood"],
+      "best_matches": ["Rabbit", "Goat", "Tiger"],
+      "good_matches": ["Rat", "Ox", "Rooster"],
+      "neutral_matches": ["Dog"],
+      "challenging_matches": ["Monkey", "Dragon"],
+      "conflict": "Snake",
+      "characteristics": "Honest, generous, sociable, compassionate"
+    }
+  },
+  "compatibility_scoring": {
+    "best_match": {
+      "score_boost": 30,
+      "description": "Highly compatible - Natural harmony and mutual support"
+    },
+    "good_match": {
+      "score_boost": 15,
+      "description": "Compatible - Generally positive relationship"
+    },
+    "neutral_match": {
+      "score_boost": 0,
+      "description": "Neutral - Requires effort but workable"
+    },
+    "challenging_match": {
+      "score_penalty": -15,
+      "description": "Challenging - Requires understanding and compromise"
+    },
+    "conflict": {
+      "score_penalty": -30,
+      "description": "Conflicting - Natural opposition, use with awareness"
+    }
+  },
+  "trinity_groups": {
+    "description": "Triangle of affinity - animals in the same group have natural understanding",
+    "group_1": {
+      "animals": ["Rat", "Dragon", "Monkey"],
+      "traits": "Ambitious, competitive, progressive",
+      "compatible_with_group": true
+    },
+    "group_2": {
+      "animals": ["Ox", "Snake", "Rooster"],
+      "traits": "Determined, purposeful, steadfast",
+      "compatible_with_group": true
+    },
+    "group_3": {
+      "animals": ["Tiger", "Horse", "Dog"],
+      "traits": "Passionate, idealistic, humanitarian",
+      "compatible_with_group": true
+    },
+    "group_4": {
+      "animals": ["Rabbit", "Goat", "Pig"],
+      "traits": "Caring, emotional, diplomatic",
+      "compatible_with_group": true
+    }
+  },
+  "conflict_pairs": {
+    "description": "Directly opposing animals in the zodiac wheel - 6 animals apart",
+    "pairs": [
+      { "animal1": "Rat", "animal2": "Horse", "conflict_type": "opposing_direction" },
+      { "animal1": "Ox", "animal2": "Goat", "conflict_type": "opposing_stability" },
+      { "animal1": "Tiger", "animal2": "Monkey", "conflict_type": "opposing_approach" },
+      { "animal1": "Rabbit", "animal2": "Rooster", "conflict_type": "opposing_timing" },
+      { "animal1": "Dragon", "animal2": "Dog", "conflict_type": "opposing_ideals" },
+      { "animal1": "Snake", "animal2": "Pig", "conflict_type": "opposing_wisdom" }
+    ]
+  },
+  "usage_guidelines": {
+    "crystal_matching": "Use zodiac compatibility to enhance Bazi element matching. A crystal from a compatible zodiac year may resonate more strongly.",
+    "interpretation": "Zodiac compatibility adds nuance to elemental analysis. Best used in combination with Five Elements compatibility.",
+    "note": "Zodiac matching is secondary to elemental balance in Bazi. Elements are primary, zodiac provides additional insight."
+  }
+}
