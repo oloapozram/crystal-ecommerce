@@ -1,0 +1,62 @@
+{
+  "wood": {
+    "yin_yang": { "yin": "soft, flexible", "yang": "strong, growing" },
+    "season": "spring",
+    "direction": "east",
+    "color": "green",
+    "personality": "creative, expansive, compassionate",
+    "body_parts": ["liver", "gallbladder", "eyes", "tendons"],
+    "produces": "fire",
+    "produced_by": "water",
+    "controls": "earth",
+    "controlled_by": "metal"
+  },
+  "fire": {
+    "yin_yang": { "yin": "warm, gentle", "yang": "intense, passionate" },
+    "season": "summer",
+    "direction": "south",
+    "color": "red",
+    "personality": "passionate, charismatic, expressive",
+    "body_parts": ["heart", "small_intestine", "tongue", "blood_vessels"],
+    "produces": "earth",
+    "produced_by": "wood",
+    "controls": "metal",
+    "controlled_by": "water"
+  },
+  "earth": {
+    "yin_yang": { "yin": "nurturing, receptive", "yang": "stable, solid" },
+    "season": "late_summer",
+    "direction": "center",
+    "color": "yellow",
+    "personality": "grounded, reliable, harmonious",
+    "body_parts": ["spleen", "stomach", "mouth", "muscles"],
+    "produces": "metal",
+    "produced_by": "fire",
+    "controls": "water",
+    "controlled_by": "wood"
+  },
+  "metal": {
+    "yin_yang": { "yin": "refined, precise", "yang": "rigid, strong" },
+    "season": "autumn",
+    "direction": "west",
+    "color": "white",
+    "personality": "organized, disciplined, righteous",
+    "body_parts": ["lung", "large_intestine", "nose", "skin"],
+    "produces": "water",
+    "produced_by": "earth",
+    "controls": "wood",
+    "controlled_by": "fire"
+  },
+  "water": {
+    "yin_yang": { "yin": "quiet, reflective", "yang": "flowing, powerful" },
+    "season": "winter",
+    "direction": "north",
+    "color": "black",
+    "personality": "intuitive, adaptable, wise",
+    "body_parts": ["kidney", "bladder", "ears", "bones"],
+    "produces": "wood",
+    "produced_by": "metal",
+    "controls": "fire",
+    "controlled_by": "earth"
+  }
+}

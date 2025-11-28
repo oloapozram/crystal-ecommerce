@@ -1,0 +1,93 @@
+{
+  "productive_cycle": {
+    "description": "The generating/producing cycle where one element nourishes another",
+    "relationships": {
+      "wood_feeds_fire": {
+        "from": "wood",
+        "to": "fire",
+        "score_boost": 25,
+        "explanation": "Wood nourishes Fire, enhancing this crystal's energy for your chart"
+      },
+      "fire_creates_earth": {
+        "from": "fire",
+        "to": "earth",
+        "score_boost": 25,
+        "explanation": "Fire produces Earth, providing grounding and stability"
+      },
+      "earth_bears_metal": {
+        "from": "earth",
+        "to": "metal",
+        "score_boost": 25,
+        "explanation": "Earth generates Metal, supporting structure and clarity"
+      },
+      "metal_enriches_water": {
+        "from": "metal",
+        "to": "water",
+        "score_boost": 25,
+        "explanation": "Metal produces Water, deepening intuition and flow"
+      },
+      "water_nourishes_wood": {
+        "from": "water",
+        "to": "wood",
+        "score_boost": 25,
+        "explanation": "Water feeds Wood, promoting growth and expansion"
+      }
+    }
+  },
+  "controlling_cycle": {
+    "description": "The restraining/controlling cycle where one element dominates another",
+    "relationships": {
+      "wood_controls_earth": {
+        "from": "wood",
+        "to": "earth",
+        "score_penalty": -50,
+        "warning": "Wood dominates Earth - may feel destabilizing, use cautiously"
+      },
+      "fire_controls_metal": {
+        "from": "fire",
+        "to": "metal",
+        "score_penalty": -50,
+        "warning": "Fire melts Metal - may create tension or overstimulation"
+      },
+      "earth_controls_water": {
+        "from": "earth",
+        "to": "water",
+        "score_penalty": -50,
+        "warning": "Earth blocks Water - may restrict emotional flow"
+      },
+      "metal_controls_wood": {
+        "from": "metal",
+        "to": "wood",
+        "score_penalty": -50,
+        "warning": "Metal cuts Wood - may limit creative expansion"
+      },
+      "water_controls_fire": {
+        "from": "water",
+        "to": "fire",
+        "score_penalty": -50,
+        "warning": "Water extinguishes Fire - may dampen passion and vitality"
+      }
+    }
+  },
+  "same_element": {
+    "description": "When crystal element matches chart element - direct strengthening",
+    "score_boost": 50,
+    "explanation": "Same element - directly strengthens and supports your elemental energy"
+  },
+  "scoring_guidelines": {
+    "base_score": 50,
+    "perfect_match_threshold": 100,
+    "good_match_threshold": 75,
+    "neutral_match_threshold": 50,
+    "caution_match_threshold": 25,
+    "avoid_threshold": 0
+  },
+  "interpretation_guide": {
+    "100+": "Exceptional match - This crystal strongly supports your Bazi chart",
+    "75-99": "Excellent match - Highly beneficial for your elemental balance",
+    "50-74": "Good match - Supportive with minor considerations",
+    "25-49": "Moderate match - May help specific areas but use mindfully",
+    "0-24": "Use with caution - May create elemental imbalance",
+    "below 0": "Avoid - Likely to create disharmony in your chart"
+  }
+}

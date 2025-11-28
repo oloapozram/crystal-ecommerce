@@ -1,0 +1,142 @@
+{
+  "rhodonite": {
+    "bazi_element": "fire",
+    "sub_element": "earth",
+    "yin_yang": "yin",
+    "authentic_properties": [
+      "Activates Heart Chakra (Fire element seat in body)",
+      "Balances emotional Fire with grounding Earth qualities",
+      "Benefits Bazi charts weak in Fire element",
+      "Strengthens Day Master when Fire is favorable",
+      "Supports emotional healing and compassion"
+    ],
+    "element_interactions": {
+      "wood": "Wood feeds Fire - enhances energy",
+      "fire": "Same element - amplifies passion",
+      "earth": "Fire creates Earth - provides grounding",
+      "metal": "Fire controls Metal - transformative",
+      "water": "Water controls Fire - use cautiously"
+    },
+    "favorable_for_bazi_charts": [
+      "Day Master weak in Fire element",
+      "Birth year in Water element (Water controls Fire, needs balance)",
+      "Charts lacking Heart energy or compassion"
+    ],
+    "contraindications": [
+      "Bazi charts with excessive Fire",
+      "Strong Yang Fire Day Masters (overstimulation)"
+    ]
+  },
+  "moonstone": {
+    "bazi_element": "water",
+    "sub_element": "metal",
+    "yin_yang": "yin",
+    "authentic_properties": [
+      "Embodies Yin Water qualities (intuition, flow)",
+      "Connects to lunar cycles and feminine energy",
+      "Benefits charts weak in Water element",
+      "Calms excessive Yang energy",
+      "Supports Kidney energy (Water organ in TCM)"
+    ],
+    "element_interactions": {
+      "wood": "Water nourishes Wood - excellent pairing",
+      "fire": "Water controls Fire - calms intense emotions",
+      "earth": "Earth controls Water - use sparingly together",
+      "metal": "Metal produces Water - enhances Yin qualities",
+      "water": "Same element - deepens intuition"
+    },
+    "favorable_for_bazi_charts": [
+      "Day Master weak in Water element",
+      "Birth year in Fire element (Fire controls Metal, Water needed)",
+      "Charts with excessive Yang requiring balance"
+    ],
+    "contraindications": [
+      "Bazi charts with excessive Water",
+      "Strong Yin Water Day Masters (can cause stagnation)"
+    ]
+  },
+  "citrine": {
+    "bazi_element": "earth",
+    "sub_element": "fire",
+    "yin_yang": "yang",
+    "authentic_properties": [
+      "Strengthens Spleen energy (Earth organ)",
+      "Manifesting and abundance through grounded action",
+      "Benefits charts weak in Earth element",
+      "Provides stability and centering",
+      "Solar plexus activation (personal power)"
+    ],
+    "element_interactions": {
+      "wood": "Earth controls Wood - can limit growth, use mindfully",
+      "fire": "Fire produces Earth - harmonious energy",
+      "earth": "Same element - amplifies stability",
+      "metal": "Earth produces Metal - supports structure",
+      "water": "Earth controls Water - provides boundaries"
+    },
+    "favorable_for_bazi_charts": [
+      "Day Master weak in Earth element",
+      "Birth year in Wood element (Wood controls Earth, needs support)",
+      "Charts lacking grounding or manifestation ability"
+    ],
+    "contraindications": [
+      "Bazi charts with excessive Earth (can cause stagnation)",
+      "Those needing more flexibility over stability"
+    ]
+  },
+  "clear_quartz": {
+    "bazi_element": "metal",
+    "sub_element": "earth",
+    "yin_yang": "neutral",
+    "authentic_properties": [
+      "Master healer - amplifies all five elements",
+      "Strengthens Lung energy (Metal organ)",
+      "Brings clarity and precision (Metal qualities)",
+      "Benefits charts needing balance across elements",
+      "Can be programmed for specific elemental work"
+    ],
+    "element_interactions": {
+      "wood": "Metal controls Wood - use to cut through confusion",
+      "fire": "Fire controls Metal - transforms rigid thinking",
+      "earth": "Earth produces Metal - grounding amplification",
+      "metal": "Same element - enhances clarity",
+      "water": "Metal produces Water - supports flow"
+    },
+    "favorable_for_bazi_charts": [
+      "Any chart needing general element balancing",
+      "Day Master weak in Metal element",
+      "Charts needing clarity or structure"
+    ],
+    "contraindications": [
+      "Very few - Clear Quartz is highly adaptable",
+      "May be too amplifying for already balanced charts"
+    ]
+  },
+  "black_tourmaline": {
+    "bazi_element": "water",
+    "sub_element": "earth",
+    "yin_yang": "yang",
+    "authentic_properties": [
+      "Embodies Yang Water (protective, powerful flow)",
+      "Grounds and protects (Earth sub-element)",
+      "Strengthens Kidney Qi (Water organ)",
+      "Transmutes negative energy",
+      "Benefits those with weak Water needing protection"
+    ],
+    "element_interactions": {
+      "wood": "Water nourishes Wood - protective growth",
+      "fire": "Water controls Fire - calms anxiety",
+      "earth": "Earth controls Water - provides stable grounding",
+      "metal": "Metal produces Water - enhances protective qualities",
+      "water": "Same element - deepens protective flow"
+    },
+    "favorable_for_bazi_charts": [
+      "Day Master weak in Water element",
+      "Charts with Fire excess (anxiety, restlessness)",
+      "Those needing energetic protection"
+    ],
+    "contraindications": [
+      "Excessive Water in chart (can increase isolation)",
+      "Those needing more openness vs protection"
+    ]
+  }
+}
