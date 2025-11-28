@@ -1,12 +1,85 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 import { prisma } from './prisma';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
-const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-});
+// Initialize AI clients (will be null if API key not provided)
+const gemini = process.env.GOOGLE_AI_API_KEY
+    ? new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY)
+    : null;
+
+const openai = process.env.OPENAI_API_KEY
+    ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+    : null;
+
+const anthropic = process.env.ANTHROPIC_API_KEY
+    ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+    : null;
+
+// Helper function to call AI with fallback
+async function callAIWithFallback(prompt: string): Promise<string> {
+    const errors: string[] = [];
+
+    // Try Gemini first (free tier is generous)
+    if (gemini) {
+        try {
+            console.log('🤖 Trying Google Gemini...');
+            const model = gemini.getGenerativeModel({ model: 'gemini-pro' });
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            console.log('✅ Gemini succeeded');
+            return response.text();
+        } catch (error) {
+            const msg = error instanceof Error ? error.message : 'Unknown error';
+            console.log(`❌ Gemini failed: ${msg}`);
+            errors.push(`Gemini: ${msg}`);
+        }
+    }
+
+    // Fallback to OpenAI
+    if (openai) {
+        try {
+            console.log('🤖 Trying OpenAI...');
+            const completion = await openai.chat.completions.create({
+                model: 'gpt-3.5-turbo',
+                messages: [{ role: 'user', content: prompt }],
+                temperature: 0.7,
+            });
+            console.log('✅ OpenAI succeeded');
+            return completion.choices[0].message.content || '';
+        } catch (error) {
+            const msg = error instanceof Error ? error.message : 'Unknown error';
+            console.log(`❌ OpenAI failed: ${msg}`);
+            errors.push(`OpenAI: ${msg}`);
+        }
+    }
+
+    // Final fallback to Anthropic
+    if (anthropic) {
+        try {
+            console.log('🤖 Trying Anthropic Claude...');
+            const response = await anthropic.messages.create({
+                model: 'claude-3-5-sonnet-20241022',
+                max_tokens: 1024,
+                messages: [{ role: 'user', content: prompt }]
+            });
+            const textContent = response.content[0];
+            if (textContent.type === 'text') {
+                console.log('✅ Anthropic succeeded');
+                return textContent.text;
+            }
+        } catch (error) {
+            const msg = error instanceof Error ? error.message : 'Unknown error';
+            console.log(`❌ Anthropic failed: ${msg}`);
+            errors.push(`Anthropic: ${msg}`);
+        }
+    }
+
+    throw new Error(`All AI providers failed. Please add at least one API key to .env.local:\n${errors.join('\n')}`);
+}
 
 interface BaziChart {
     birthYear: number;
@@ -95,23 +168,16 @@ Return ONLY valid JSON (no markdown, no code blocks):
   "confidence_score": 0.95
 }`;
 
-    // 4. Call Anthropic API
-    const response = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 1024,
-        messages: [{ role: 'user', content: prompt }]
-    });
-
-    const textContent = response.content[0];
-    if (textContent.type !== 'text') {
-        throw new Error('Unexpected response type from Anthropic API');
-    }
+    // 4. Call AI with fallback
+    const responseText = await callAIWithFallback(prompt);
 
     let result: BaziSellingCopyResult;
     try {
-        result = JSON.parse(textContent.text);
+        // Clean up response (remove markdown code blocks if present)
+        const cleanedText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        result = JSON.parse(cleanedText);
     } catch (error) {
-        throw new Error(`Failed to parse AI response: ${textContent.text}`);
+        throw new Error(`Failed to parse AI response: ${responseText}`);
     }
 
     // 5. Save to database
@@ -187,18 +253,9 @@ Return ONLY valid JSON (no markdown):
   "caption": "..."
 }`;
 
-    const response = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 1500,
-        messages: [{ role: 'user', content: prompt }]
-    });
-
-    const textContent = response.content[0];
-    if (textContent.type !== 'text') {
-        throw new Error('Unexpected response type from Anthropic API');
-    }
-
-    const result = JSON.parse(textContent.text);
+    const responseText = await callAIWithFallback(prompt);
+    const cleanedText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    const result = JSON.parse(cleanedText);
 
     await prisma.aiGeneratedContent.create({
         data: {
