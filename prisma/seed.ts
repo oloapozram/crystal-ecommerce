@@ -2,8 +2,52 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// Crystal data with Bazi element mappings
+const crystalData = [
+  { name: 'Amethyst', element: 'WATER', properties: ['intuition', 'spiritual_growth', 'protection', 'clarity'], description: 'Purple quartz for spiritual awareness and protection' },
+  { name: 'Clear Quartz', element: 'METAL', properties: ['clarity', 'amplification', 'healing', 'master_healer'], description: 'Master healer crystal, amplifies all energies' },
+  { name: 'Rose Quartz', element: 'FIRE', properties: ['love', 'compassion', 'emotional_healing', 'heart_chakra'], description: 'Pink crystal of unconditional love and compassion' },
+  { name: 'Citrine', element: 'EARTH', properties: ['abundance', 'manifestation', 'personal_power', 'clarity'], description: 'Golden crystal for abundance and manifestation' },
+  { name: 'Black Tourmaline', element: 'WATER', properties: ['protection', 'grounding', 'transmutation', 'shielding'], description: 'Powerful protective stone, grounds negative energy' },
+  { name: 'Smoky Quartz', element: 'EARTH', properties: ['grounding', 'protection', 'stress_relief', 'detoxification'], description: 'Grounding brown quartz for releasing negativity' },
+  { name: 'Selenite', element: 'METAL', properties: ['clarity', 'purification', 'spiritual_connection', 'cleansing'], description: 'White crystal for spiritual clarity and cleansing' },
+  { name: 'Labradorite', element: 'WATER', properties: ['transformation', 'intuition', 'magic', 'protection'], description: 'Iridescent stone of transformation and magic' },
+  { name: 'Lapis Lazuli', element: 'WATER', properties: ['wisdom', 'truth', 'communication', 'intuition'], description: 'Deep blue stone of wisdom and truth' },
+  { name: 'Tiger Eye', element: 'FIRE', properties: ['courage', 'confidence', 'protection', 'grounding'], description: 'Golden-brown stone for courage and confidence' },
+  { name: 'Green Aventurine', element: 'WOOD', properties: ['prosperity', 'luck', 'heart_healing', 'growth'], description: 'Green stone of luck and prosperity' },
+  { name: 'Carnelian', element: 'FIRE', properties: ['vitality', 'courage', 'creativity', 'motivation'], description: 'Orange-red stone for vitality and creativity' },
+  { name: 'Amazonite', element: 'WATER', properties: ['communication', 'truth', 'harmony', 'soothing'], description: 'Turquoise stone for communication and harmony' },
+  { name: 'Moonstone', element: 'WATER', properties: ['intuition', 'feminine_energy', 'lunar_connection', 'emotional_healing'], description: 'Pearly white stone of feminine energy' },
+  { name: 'Obsidian', element: 'WATER', properties: ['protection', 'grounding', 'truth', 'shadow_work'], description: 'Black volcanic glass for deep protection' },
+  { name: 'Hematite', element: 'METAL', properties: ['grounding', 'protection', 'strength', 'focus'], description: 'Metallic stone for grounding and focus' },
+  { name: 'Malachite', element: 'WOOD', properties: ['transformation', 'protection', 'healing', 'growth'], description: 'Green banded stone of transformation' },
+  { name: 'Rhodonite', element: 'FIRE', properties: ['healing', 'love', 'compassion', 'emotional_balance'], description: 'Pink stone with black veins for emotional healing' },
+  { name: 'Rhodochrosite', element: 'FIRE', properties: ['love', 'self_love', 'compassion', 'emotional_healing'], description: 'Pink banded stone of self-love' },
+  { name: 'Fluorite', element: 'WATER', properties: ['clarity', 'focus', 'protection', 'mental_clarity'], description: 'Multi-colored stone for mental clarity' },
+  { name: 'Pyrite', element: 'FIRE', properties: ['abundance', 'manifestation', 'confidence', 'protection'], description: 'Golden metallic stone of abundance' },
+  { name: 'Jade', element: 'WOOD', properties: ['prosperity', 'harmony', 'protection', 'longevity'], description: 'Green stone of prosperity and harmony' },
+  { name: 'Blue Lace Agate', element: 'WATER', properties: ['communication', 'peace', 'calm', 'expression'], description: 'Light blue banded stone for peaceful communication' },
+  { name: 'Red Jasper', element: 'FIRE', properties: ['vitality', 'strength', 'grounding', 'courage'], description: 'Red stone for vitality and strength' },
+  { name: 'Howlite', element: 'METAL', properties: ['calm', 'patience', 'stress_relief', 'awareness'], description: 'White stone for calming and patience' },
+  { name: 'Chalcedony', element: 'WATER', properties: ['harmony', 'generosity', 'communication', 'balance'], description: 'Translucent stone for harmony and balance' },
+  { name: 'Lepidolite', element: 'WATER', properties: ['calm', 'emotional_balance', 'stress_relief', 'transition'], description: 'Purple stone for emotional balance' },
+  { name: 'Shungite', element: 'EARTH', properties: ['protection', 'purification', 'grounding', 'emf_protection'], description: 'Black stone for EMF protection and purification' },
+  { name: 'Moldavite', element: 'FIRE', properties: ['transformation', 'spiritual_growth', 'acceleration', 'cosmic_connection'], description: 'Green tektite for rapid transformation' },
+  { name: 'Sunstone', element: 'FIRE', properties: ['joy', 'vitality', 'leadership', 'confidence'], description: 'Orange stone of joy and vitality' },
+  { name: 'Bloodstone', element: 'EARTH', properties: ['vitality', 'courage', 'grounding', 'purification'], description: 'Dark green stone with red spots for vitality' },
+  { name: 'Apatite', element: 'WATER', properties: ['manifestation', 'communication', 'clarity', 'motivation'], description: 'Blue-green stone for manifestation' },
+  { name: 'Aquamarine', element: 'WATER', properties: ['communication', 'courage', 'clarity', 'calm'], description: 'Light blue stone for clear communication' },
+  { name: 'Kunzite', element: 'FIRE', properties: ['love', 'emotional_healing', 'peace', 'divine_love'], description: 'Pink stone of divine love' },
+  { name: 'Chrysocolla', element: 'WATER', properties: ['communication', 'empowerment', 'teaching', 'goddess_energy'], description: 'Blue-green stone for empowered communication' },
+  { name: 'Angelite', element: 'WATER', properties: ['peace', 'angelic_connection', 'communication', 'compassion'], description: 'Light blue stone for angelic connection' },
+  { name: 'Unakite', element: 'WOOD', properties: ['balance', 'healing', 'grounding', 'emotional_release'], description: 'Green and pink stone for emotional balance' },
+  { name: 'Tourmalinated Quartz', element: 'METAL', properties: ['protection', 'grounding', 'balance', 'clarity'], description: 'Clear quartz with black tourmaline inclusions' },
+  { name: 'Kyanite', element: 'WATER', properties: ['alignment', 'communication', 'meditation', 'balance'], description: 'Blue blade-like stone for alignment' },
+  { name: 'Morganite', element: 'FIRE', properties: ['love', 'compassion', 'divine_love', 'emotional_healing'], description: 'Pink beryl for divine love and compassion' },
+];
+
 async function main() {
-  console.log('Seeding database...');
+  console.log('Seeding database with 40 crystal types...');
 
   // Create suppliers
   const fafa = await prisma.supplier.create({
@@ -22,240 +66,70 @@ async function main() {
     },
   });
 
-  console.log('✓ Suppliers created');
-
-  // Create new prospect supplier
-  const newSupplier = await prisma.supplier.create({
+  const crystalDirect = await prisma.supplier.create({
     data: {
       name: 'Crystal Direct Wholesale',
       contactEmail: 'quotes@crystaldirect.com',
-      notes: 'New supplier, competitive pricing, no purchase history yet',
+      notes: 'Competitive pricing, wide variety',
     },
   });
 
-  console.log('✓ New prospect supplier created');
+  console.log('✓ Suppliers created');
 
   // Create products
-  const sakuraRhod10Normal = await prisma.product.create({
-    data: {
-      baseName: 'Sakura Rhodonite',
-      sizeMm: 10.00,
-      qualityGrade: 'NORMAL',
-      sku: 'SAKURA-RHOD-10MM-NORMAL',
-      baziElement: 'FIRE',
-      metaphysicalProperties: ['healing', 'love', 'compassion', 'emotional_balance'],
-      description: 'Beautiful sakura pink rhodonite beads, perfect for heart-centered work',
-      isActive: true,
-    },
-  });
+  const products = [];
+  for (const crystal of crystalData) {
+    const product = await prisma.product.create({
+      data: {
+        baseName: crystal.name,
+        sizeMm: 10.00,
+        qualityGrade: 'NORMAL',
+        sku: `${crystal.name.toUpperCase().replace(/['\s]/g, '-')}-10MM-NORMAL`,
+        baziElement: crystal.element,
+        metaphysicalProperties: crystal.properties,
+        description: crystal.description,
+        isActive: true,
+      },
+    });
+    products.push(product);
+  }
 
-  const sakuraRhod12Normal = await prisma.product.create({
-    data: {
-      baseName: 'Sakura Rhodonite',
-      sizeMm: 12.00,
-      qualityGrade: 'NORMAL',
-      sku: 'SAKURA-RHOD-12MM-NORMAL',
-      baziElement: 'FIRE',
-      metaphysicalProperties: ['healing', 'love', 'compassion', 'emotional_balance'],
-      description: 'Larger sakura rhodonite beads, more intense energy',
-      isActive: true,
-    },
-  });
+  console.log(`✓ ${products.length} products created`);
 
-  const sakuraRhod10Good = await prisma.product.create({
-    data: {
-      baseName: 'Sakura Rhodonite',
-      sizeMm: 10.00,
-      qualityGrade: 'GOOD',
-      sku: 'SAKURA-RHOD-10MM-GOOD',
-      baziElement: 'FIRE',
-      metaphysicalProperties: ['healing', 'love', 'compassion', 'emotional_balance'],
-      description: 'Higher quality sakura rhodonite with excellent clarity',
-      isActive: true,
-    },
-  });
+  // Create purchases and stock for each product
+  for (let i = 0; i < products.length; i++) {
+    const product = products[i];
+    const supplier = i % 3 === 0 ? fafa : i % 3 === 1 ? pandora : crystalDirect;
+    const costPerGram = 0.15 + (Math.random() * 0.35); // Random cost between $0.15-$0.50/g
+    const weightGrams = 20 + (Math.random() * 30); // Random weight 20-50g
+    const quantity = Math.floor(5 + Math.random() * 20); // Random quantity 5-25
 
-  const blueMoon8Normal = await prisma.product.create({
-    data: {
-      baseName: 'Blue Moonstone',
-      sizeMm: 8.00,
-      qualityGrade: 'NORMAL',
-      sku: 'BLUE-MOON-8MM-NORMAL',
-      baziElement: 'WATER',
-      metaphysicalProperties: ['intuition', 'feminine_energy', 'lunar_connection', 'emotional_healing'],
-      description: 'Shimmering blue moonstone with strong adularescence',
-      isActive: true,
-    },
-  });
+    await prisma.inventoryPurchase.create({
+      data: {
+        productId: product.id,
+        supplierId: supplier.id,
+        quantityPurchased: quantity,
+        weightGrams: weightGrams,
+        costTotal: costPerGram * weightGrams,
+        markupPercentage: 40.00,
+        qualityRating: Math.floor(3 + Math.random() * 3), // 3-5 stars
+        purchaseDate: new Date('2025-01-15'),
+        notes: `Quality ${product.baseName} from ${supplier.name}`,
+      },
+    });
 
-  console.log('✓ Products created');
+    await prisma.inventoryStock.create({
+      data: {
+        productId: product.id,
+        quantityAvailable: quantity,
+        weightGramsAvailable: weightGrams,
+        avgCostPerGram: costPerGram,
+        lastRestockDate: new Date('2025-01-15'),
+      },
+    });
+  }
 
-  // Create purchases
-  await prisma.inventoryPurchase.create({
-    data: {
-      productId: sakuraRhod10Normal.id,
-      supplierId: fafa.id,
-      quantityPurchased: 10,
-      weightGrams: 20.00,
-      costTotal: 5.00,
-      markupPercentage: 40.00,
-      qualityRating: 4,
-      purchaseDate: new Date('2025-01-15'),
-      notes: 'Good color consistency',
-    },
-  });
-
-  await prisma.inventoryPurchase.create({
-    data: {
-      productId: sakuraRhod12Normal.id,
-      supplierId: fafa.id,
-      quantityPurchased: 5,
-      weightGrams: 30.00,
-      costTotal: 7.00,
-      markupPercentage: 40.00,
-      qualityRating: 4,
-      purchaseDate: new Date('2025-01-15'),
-      notes: 'Slightly larger than expected',
-    },
-  });
-
-  await prisma.inventoryPurchase.create({
-    data: {
-      productId: sakuraRhod10Good.id,
-      supplierId: pandora.id,
-      quantityPurchased: 8,
-      weightGrams: 20.00,
-      costTotal: 9.00,
-      markupPercentage: 40.00,
-      qualityRating: 5,
-      purchaseDate: new Date('2025-01-20'),
-      notes: 'Excellent clarity, premium feel',
-    },
-  });
-
-  await prisma.inventoryPurchase.create({
-    data: {
-      productId: blueMoon8Normal.id,
-      supplierId: fafa.id,
-      quantityPurchased: 12,
-      weightGrams: 15.00,
-      costTotal: 6.00,
-      markupPercentage: 40.00,
-      qualityRating: 4,
-      purchaseDate: new Date('2025-01-18'),
-      notes: 'Strong blue flash',
-    },
-  });
-
-  console.log('✓ Purchases created');
-
-  // Create stock records
-  await prisma.inventoryStock.create({
-    data: {
-      productId: sakuraRhod10Normal.id,
-      quantityAvailable: 10,
-      weightGramsAvailable: 20.00,
-      avgCostPerGram: 0.25,
-      lastRestockDate: new Date('2025-01-15'),
-    },
-  });
-
-  await prisma.inventoryStock.create({
-    data: {
-      productId: sakuraRhod12Normal.id,
-      quantityAvailable: 5,
-      weightGramsAvailable: 30.00,
-      avgCostPerGram: 0.2333,
-      lastRestockDate: new Date('2025-01-15'),
-    },
-  });
-
-  await prisma.inventoryStock.create({
-    data: {
-      productId: sakuraRhod10Good.id,
-      quantityAvailable: 8,
-      weightGramsAvailable: 20.00,
-      avgCostPerGram: 0.45,
-      lastRestockDate: new Date('2025-01-20'),
-    },
-  });
-
-  await prisma.inventoryStock.create({
-    data: {
-      productId: blueMoon8Normal.id,
-      quantityAvailable: 12,
-      weightGramsAvailable: 15.00,
-      avgCostPerGram: 0.40,
-      lastRestockDate: new Date('2025-01-18'),
-    },
-  });
-
-  console.log('✓ Stock records created');
-
-  // Create prospect supplier quotes
-  console.log('Creating prospect quotes...');
-
-  // Quote from new supplier - better price than fafa
-  await prisma.supplierQuote.create({
-    data: {
-      supplierId: newSupplier.id,
-      productId: sakuraRhod10Normal.id,
-      quotedPricePerGram: 0.20, // vs fafa's actual 0.25
-      minimumOrderGrams: 50.00,
-      estimatedQualityRating: 4, // same as fafa's actual
-      quoteDate: new Date('2025-11-25'),
-      expiresAt: new Date('2025-12-31'),
-      status: 'PENDING',
-      notes: 'Bulk discount - 100g+ gets 0.18/gram',
-    },
-  });
-
-  // Quote from existing supplier (pandora) for different product
-  await prisma.supplierQuote.create({
-    data: {
-      supplierId: pandora.id,
-      productId: blueMoon8Normal.id,
-      quotedPricePerGram: 0.38, // vs fafa's actual 0.40
-      minimumOrderGrams: 30.00,
-      estimatedQualityRating: 5, // higher than fafa's 4
-      quoteDate: new Date('2025-11-27'),
-      expiresAt: new Date('2026-01-15'),
-      status: 'PENDING',
-      notes: 'Premium grade blue flash, AAA quality',
-    },
-  });
-
-  // Quote from fafa for product they haven't sold yet
-  await prisma.supplierQuote.create({
-    data: {
-      supplierId: fafa.id,
-      productId: sakuraRhod10Good.id,
-      quotedPricePerGram: 0.42, // vs pandora's actual 0.45
-      minimumOrderGrams: 25.00,
-      estimatedQualityRating: 5,
-      quoteDate: new Date('2025-11-26'),
-      expiresAt: new Date('2025-12-20'),
-      status: 'PENDING',
-      notes: 'Can match pandora quality at lower price',
-    },
-  });
-
-  // Expired quote (for testing status filter)
-  await prisma.supplierQuote.create({
-    data: {
-      supplierId: fafa.id,
-      productId: sakuraRhod12Normal.id,
-      quotedPricePerGram: 0.22,
-      minimumOrderGrams: 40.00,
-      estimatedQualityRating: 4,
-      quoteDate: new Date('2025-10-01'),
-      expiresAt: new Date('2025-10-31'),
-      status: 'EXPIRED',
-      notes: 'Missed this quote - expired last month',
-    },
-  });
-
-  console.log('✓ Prospect quotes created');
+  console.log('✓ Purchases and stock created');
   console.log('✅ Seeding complete!');
 }
 
