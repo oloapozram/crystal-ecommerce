@@ -24,6 +24,17 @@ async function main() {
 
   console.log('✓ Suppliers created');
 
+  // Create new prospect supplier
+  const newSupplier = await prisma.supplier.create({
+    data: {
+      name: 'Crystal Direct Wholesale',
+      contactEmail: 'quotes@crystaldirect.com',
+      notes: 'New supplier, competitive pricing, no purchase history yet',
+    },
+  });
+
+  console.log('✓ New prospect supplier created');
+
   // Create products
   const sakuraRhod10Normal = await prisma.product.create({
     data: {
@@ -180,6 +191,71 @@ async function main() {
   });
 
   console.log('✓ Stock records created');
+
+  // Create prospect supplier quotes
+  console.log('Creating prospect quotes...');
+
+  // Quote from new supplier - better price than fafa
+  await prisma.supplierQuote.create({
+    data: {
+      supplierId: newSupplier.id,
+      productId: sakuraRhod10Normal.id,
+      quotedPricePerGram: 0.20, // vs fafa's actual 0.25
+      minimumOrderGrams: 50.00,
+      estimatedQualityRating: 4, // same as fafa's actual
+      quoteDate: new Date('2025-11-25'),
+      expiresAt: new Date('2025-12-31'),
+      status: 'PENDING',
+      notes: 'Bulk discount - 100g+ gets 0.18/gram',
+    },
+  });
+
+  // Quote from existing supplier (pandora) for different product
+  await prisma.supplierQuote.create({
+    data: {
+      supplierId: pandora.id,
+      productId: blueMoon8Normal.id,
+      quotedPricePerGram: 0.38, // vs fafa's actual 0.40
+      minimumOrderGrams: 30.00,
+      estimatedQualityRating: 5, // higher than fafa's 4
+      quoteDate: new Date('2025-11-27'),
+      expiresAt: new Date('2026-01-15'),
+      status: 'PENDING',
+      notes: 'Premium grade blue flash, AAA quality',
+    },
+  });
+
+  // Quote from fafa for product they haven't sold yet
+  await prisma.supplierQuote.create({
+    data: {
+      supplierId: fafa.id,
+      productId: sakuraRhod10Good.id,
+      quotedPricePerGram: 0.42, // vs pandora's actual 0.45
+      minimumOrderGrams: 25.00,
+      estimatedQualityRating: 5,
+      quoteDate: new Date('2025-11-26'),
+      expiresAt: new Date('2025-12-20'),
+      status: 'PENDING',
+      notes: 'Can match pandora quality at lower price',
+    },
+  });
+
+  // Expired quote (for testing status filter)
+  await prisma.supplierQuote.create({
+    data: {
+      supplierId: fafa.id,
+      productId: sakuraRhod12Normal.id,
+      quotedPricePerGram: 0.22,
+      minimumOrderGrams: 40.00,
+      estimatedQualityRating: 4,
+      quoteDate: new Date('2025-10-01'),
+      expiresAt: new Date('2025-10-31'),
+      status: 'EXPIRED',
+      notes: 'Missed this quote - expired last month',
+    },
+  });
+
+  console.log('✓ Prospect quotes created');
   console.log('✅ Seeding complete!');
 }
 
