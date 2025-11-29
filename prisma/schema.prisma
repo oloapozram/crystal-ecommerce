@@ -22,19 +22,37 @@ model Supplier {
   @@map("suppliers")
 }
 
-model Product {
-  id                     Int          @id @default(autoincrement())
-  baseName               String       @map("base_name") @db.VarChar(255)
-  sizeMm                 Decimal      @map("size_mm") @db.Decimal(5, 2)
-  qualityGrade           QualityGrade @default(NORMAL) @map("quality_grade")
-  sku                    String       @unique @db.VarChar(100)
-  baziElement            BaziElement? @map("bazi_element")
-  metaphysicalProperties Json?        @map("metaphysical_properties")
-  description            String?      @db.Text
-  isActive               Boolean      @default(true) @map("is_active")
-  createdAt              DateTime     @default(now()) @map("created_at")
-  updatedAt              DateTime     @updatedAt @map("updated_at")
+model CrystalMaterial {
+  id                Int         @id @default(autoincrement())
+  name              String      @unique @db.VarChar(100)
+  baziElement       BaziElement @map("bazi_element")
+  defaultProperties Json        @map("default_properties")
+  chakra            String?     @db.VarChar(100)
+  color             String?     @db.VarChar(100)
+  description       String?     @db.Text
+  createdAt         DateTime    @default(now()) @map("created_at")
+  
+  products Product[]
+  
+  @@map("crystal_materials")
+}
 
+model Product {
+  id                     Int              @id @default(autoincrement())
+  baseName               String           @map("base_name") @db.VarChar(255)
+  materialId             Int?             @map("material_id")
+  variety                String?          @db.VarChar(100)
+  sizeMm                 Decimal          @map("size_mm") @db.Decimal(5, 2)
+  qualityGrade           QualityGrade     @default(NORMAL) @map("quality_grade")
+  sku                    String           @unique @db.VarChar(100)
+  baziElement            BaziElement?     @map("bazi_element")
+  metaphysicalProperties Json?            @map("metaphysical_properties")
+  description            String?          @db.Text
+  isActive               Boolean          @default(true) @map("is_active")
+  createdAt              DateTime         @default(now()) @map("created_at")
+  updatedAt              DateTime         @updatedAt @map("updated_at")
+
+  material   CrystalMaterial?    @relation(fields: [materialId], references: [id])
   purchases  InventoryPurchase[]
   stock      InventoryStock?
   mediaFiles MediaFile[]
@@ -44,6 +62,7 @@ model Product {
   @@index([baziElement])
   @@index([qualityGrade])
   @@index([isActive])
+  @@index([materialId])
   @@map("products")
 }
 

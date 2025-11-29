@@ -25,18 +25,24 @@ async function callAIWithFallback(prompt: string): Promise<string> {
 
     // Try Gemini first (free tier is generous)
     if (gemini) {
-        try {
-            console.log('🤖 Trying Google Gemini...');
-            const model = gemini.getGenerativeModel({ model: 'gemini-pro' });
-            const result = await model.generateContent(prompt);
-            const response = await result.response;
-            console.log('✅ Gemini succeeded');
-            return response.text();
-        } catch (error) {
-            const msg = error instanceof Error ? error.message : 'Unknown error';
-            console.log(`❌ Gemini failed: ${msg}`);
-            errors.push(`Gemini: ${msg}`);
+        // Updated models based on available API list
+        const models = ['gemini-2.0-flash', 'gemini-flash-latest', 'gemini-1.5-pro-latest'];
+
+        for (const modelName of models) {
+            try {
+                console.log(`🤖 Trying Google Gemini model: ${modelName}...`);
+                const model = gemini.getGenerativeModel({ model: modelName });
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                console.log('✅ Gemini succeeded');
+                return response.text();
+            } catch (error) {
+                const msg = error instanceof Error ? error.message : 'Unknown error';
+                console.log(`❌ Gemini ${modelName} failed: ${msg}`);
+                // Continue to next model
+            }
         }
+        errors.push('Gemini: All models failed');
     }
 
     // Fallback to OpenAI
@@ -158,6 +164,7 @@ CRITICAL RULES:
 - If uncertain about a Bazi principle, state "consult a certified Bazi practitioner for personalized analysis"
 - NEVER invent new metaphysical properties
 - If no specific crystal data exists, use general element properties
+- DO NOT use phrases like "In Bazi", "According to Bazi", or "In Chinese metaphysics". Just state the properties directly (e.g., "Fire represents passion..." instead of "In Bazi, Fire represents...").
 
 Return ONLY valid JSON (no markdown, no code blocks):
 {
@@ -268,4 +275,43 @@ Return ONLY valid JSON (no markdown):
     });
 
     return result;
+}
+
+/**
+ * Generate personalized crystal match explanation for Find Your Crystal tool
+ */
+export async function generateCrystalMatchExplanation(
+    product: any,
+    baziChart: any,
+    concerns: string[]
+): Promise<string> {
+    const elementNames = {
+        WOOD: "Wood",
+        FIRE: "Fire",
+        EARTH: "Earth",
+        METAL: "Metal",
+        WATER: "Water"
+    };
+
+    const prompt = `You are a warm, knowledgeable Bazi and crystal healing guide. Generate a personalized explanation (2-3 sentences) for why this crystal is recommended.
+
+USER'S PROFILE:
+- Dominant Element: ${elementNames[baziChart.dominantElement as keyof typeof elementNames]}
+- Year Element: ${elementNames[baziChart.yearElement as keyof typeof elementNames]}
+- Day Element: ${elementNames[baziChart.dayElement as keyof typeof elementNames]}
+- Needs Balance: ${baziChart.deficientElements.map((e: string) => elementNames[e as keyof typeof elementNames]).join(", ") || "Well-balanced"}
+- Intentions: ${concerns.slice(0, 3).join(", ")}
+
+CRYSTAL:
+- Name: ${product.baseName}
+- Element: ${elementNames[product.baziElement as keyof typeof elementNames]}
+- Properties: ${JSON.stringify(product.metaphysicalProperties)}
+
+TASK:
+Write a warm, personalized explanation (2-3 sentences) connecting this crystal to their unique energy profile and intentions. Use "you/your" language. Be specific to their chart, not generic. Focus on how this crystal supports their journey.
+
+Return ONLY the explanation text (no JSON, no markdown, just the paragraph).`;
+
+    const responseText = await callAIWithFallback(prompt);
+    return responseText.trim();
 }

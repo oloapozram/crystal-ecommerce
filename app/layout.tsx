@@ -16,7 +16,7 @@ const cinzel = Cinzel({
 
 export const metadata: Metadata = {
   title: "Crystal Essence - Align Your Energy",
-  description: "E-commerce platform for crystal merchandise with Bazi matching",
+  description: "E-commerce platform for crystal merchandise with elemental matching",
 };
 
 export default function RootLayout({

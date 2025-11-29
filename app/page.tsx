@@ -11,7 +11,7 @@ export default function Home() {
           Discover crystals that resonate with your unique energy
         </p>
         <p className="text-lg text-gray-500">
-          Using authentic Chinese Bazi astrology to find your perfect crystal match
+          Using a personalized elemental profile to find your perfect crystal match
         </p>
         <Link href="/find-your-crystal">
           <Button size="lg" className="mt-4">
