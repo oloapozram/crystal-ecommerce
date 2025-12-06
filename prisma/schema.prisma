@@ -58,6 +58,7 @@ model Product {
   mediaFiles MediaFile[]
   aiContent  AiGeneratedContent[]
   quotes     SupplierQuote[]
+  orderItems OrderItem[]
 
   @@index([baziElement])
   @@index([qualityGrade])
@@ -193,4 +194,55 @@ enum QuoteStatus {
   ACCEPTED @map("accepted")
   REJECTED @map("rejected")
   EXPIRED  @map("expired")
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT @map("pending_payment")
+  PAID            @map("paid")
+  PROCESSING      @map("processing")
+  SHIPPED         @map("shipped")
+  COMPLETED       @map("completed")
+  CANCELLED       @map("cancelled")
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  orderNumber     String      @unique @map("order_number") @db.VarChar(20)
+
+  customerName    String      @map("customer_name") @db.VarChar(255)
+  customerEmail   String      @map("customer_email") @db.VarChar(255)
+  customerPhone   String?     @map("customer_phone") @db.VarChar(50)
+  customerMessage String?     @map("customer_message") @db.Text
+
+  status          OrderStatus @default(PENDING_PAYMENT)
+  itemCount       Int         @map("item_count")
+  subtotal        Decimal     @db.Decimal(10, 2)
+
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  items           OrderItem[]
+
+  @@index([status])
+  @@index([customerEmail])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id           Int     @id @default(autoincrement())
+  orderId      Int     @map("order_id")
+  productId    Int     @map("product_id")
+
+  sku          String  @db.VarChar(100)
+  productName  String  @map("product_name") @db.VarChar(255)
+  pricePerUnit Decimal @map("price_per_unit") @db.Decimal(10, 2)
+  quantity     Int
+
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product      Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
 }
