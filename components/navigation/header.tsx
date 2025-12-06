@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Sparkles, ShoppingBag, LayoutDashboard } from "lucide-react"
+import { Sparkles, LayoutDashboard } from "lucide-react"
+import { CartBadge } from "@/components/cart/cart-badge"
 
 export function Header() {
     return (
@@ -26,9 +27,7 @@ export function Header() {
                     </nav>
 
                     <div className="flex items-center space-x-4">
-                        <Button variant="ghost" size="icon">
-                            <ShoppingBag className="w-5 h-5" />
-                        </Button>
+                        <CartBadge />
                         <Link href="/find-your-crystal" className="hidden sm:block">
                             <Button size="sm">
                                 <Sparkles className="w-4 h-4 mr-2" />
