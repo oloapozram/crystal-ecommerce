@@ -2,176 +2,270 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { useCart } from '@/lib/cart/cart-context';
-import { checkoutSchema, CheckoutFormData } from '@/lib/validation/checkout';
 import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+
+// Checkout form validation schema
+const checkoutSchema = z.object({
+  customerName: z.string().min(2, 'Name must be at least 2 characters'),
+  customerEmail: z.string().email('Invalid email address'),
+  customerPhone: z.string().optional(),
+  customerMessage: z.string().optional(),
+  agreeToTerms: z.boolean().refine((val) => val === true, {
+    message: 'You must agree to the terms',
+  }),
+});
+
+type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { cart, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm<CheckoutFormData>({
+  const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
+    defaultValues: {
+      customerName: '',
+      customerEmail: '',
+      customerPhone: '',
+      customerMessage: '',
+      agreeToTerms: false,
+    },
   });
 
-  const onSubmit = async (data: CheckoutFormData) => {
-    setIsSubmitting(true);
-
-    // Validate cart
-    const validationResponse = await fetch('/api/cart/validate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        items: cart.items.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          pricePerUnit: item.pricePerUnit,
-        })),
-      }),
-    });
-
-    const validation = await validationResponse.json();
-
-    if (!validation.valid) {
-      alert('Some items in your cart are no longer available. Please review your cart.');
-      setIsSubmitting(false);
-      router.push('/cart');
-      return;
-    }
-
-    // Prepare order data
-    const orderData = {
-      customer: data,
-      items: cart.items,
-      subtotal: cart.subtotal,
-    };
-
-    console.log('Order submitted:', orderData);
-
-    // For now, just show success message
-    alert('Thank you for your order! We will contact you shortly via email.');
-    clearCart();
-    router.push('/');
-  };
-
+  // Redirect if cart is empty
   if (cart.items.length === 0) {
     router.push('/cart');
     return null;
   }
 
+  const onSubmit = async (data: CheckoutFormData) => {
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      // Prepare order data
+      const orderData = {
+        customerName: data.customerName,
+        customerEmail: data.customerEmail,
+        customerPhone: data.customerPhone || undefined,
+        customerMessage: data.customerMessage || undefined,
+        items: cart.items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+      };
+
+      // Create order
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create order');
+      }
+
+      const order = await response.json();
+
+      // Clear cart on success
+      clearCart();
+
+      // Redirect to order confirmation page
+      router.push(`/cart/order-confirmation?orderNumber=${order.orderNumber}`);
+    } catch (err) {
+      console.error('Checkout error:', err);
+      setError(err instanceof Error ? err.message : 'An error occurred during checkout');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+      <Button variant="ghost" size="sm" asChild className="mb-4">
+        <Link href="/cart">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Cart
+        </Link>
+      </Button>
 
-        <div className="grid gap-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
-              <CardDescription>
-                {cart.itemCount} items • ${cart.subtotal.toFixed(2)}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {cart.items.map((item) => (
-                  <div key={item.productId} className="flex justify-between text-sm">
-                    <span>
-                      {item.baseName} ({item.quantity}x)
-                    </span>
-                    <span>${(item.pricePerUnit * item.quantity).toFixed(2)}</span>
+      <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Checkout Form */}
+        <div className="lg:col-span-2">
+          <div className="bg-card rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-6">Contact Information</h2>
+
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="customerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="customerEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address *</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="john@example.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="customerPhone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number (Optional)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="tel"
+                          placeholder="+1 (555) 123-4567"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="customerMessage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Message (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Any special requests or notes..."
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="agreeToTerms"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>
+                          I agree to the terms and conditions *
+                        </FormLabel>
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                {error && (
+                  <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-lg">
+                    {error}
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Contact Information</CardTitle>
-              <CardDescription>
-                We'll contact you to arrange payment and shipping
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Name *</Label>
-                  <Input
-                    id="name"
-                    {...register('name')}
-                    placeholder="John Doe"
-                  />
-                  {errors.name && (
-                    <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    {...register('email')}
-                    placeholder="john@example.com"
-                  />
-                  {errors.email && (
-                    <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="phone">Phone (optional)</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    {...register('phone')}
-                    placeholder="+1 (555) 123-4567"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="message">Message (optional)</Label>
-                  <Textarea
-                    id="message"
-                    {...register('message')}
-                    placeholder="Any special requests or questions?"
-                    rows={4}
-                  />
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="terms"
-                    onCheckedChange={(checked) => setValue('agreeToTerms', checked as boolean)}
-                  />
-                  <Label htmlFor="terms" className="text-sm font-normal">
-                    I agree to be contacted about this order
-                  </Label>
-                </div>
-                {errors.agreeToTerms && (
-                  <p className="text-sm text-destructive">{errors.agreeToTerms.message}</p>
                 )}
 
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? 'Submitting...' : 'Submit Order'}
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full"
+                  size="lg"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing Order...
+                    </>
+                  ) : (
+                    'Place Order'
+                  )}
                 </Button>
               </form>
-            </CardContent>
-          </Card>
+            </Form>
+          </div>
+        </div>
+
+        {/* Order Summary */}
+        <div>
+          <div className="bg-card rounded-lg p-6 sticky top-4">
+            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+
+            <div className="space-y-3 mb-6">
+              {cart.items.map((item) => (
+                <div key={item.productId} className="flex justify-between text-sm">
+                  <span>
+                    {item.name} × {item.quantity}
+                  </span>
+                  <span className="font-medium">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t pt-4">
+              <div className="flex justify-between mb-2">
+                <span className="text-muted-foreground">Items ({cart.itemCount})</span>
+                <span>${cart.subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-lg font-bold">
+                <span>Total</span>
+                <span>${cart.subtotal.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
