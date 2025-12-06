@@ -1,36 +1,16 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-interface PricingResult {
-  costPerGram: number;
-  retailPerGram: number;
-  totalRetailPrice: number;
-  markup: number;
-}
-
-function calculateRetailPrice(
-  costPerGram: number,
-  markupPercentage: number,
-  weightGrams: number
-): PricingResult {
-  const retailPerGram = costPerGram * (1 + markupPercentage / 100);
-  const totalRetailPrice = parseFloat((retailPerGram * weightGrams).toFixed(2));
-
-  return {
-    costPerGram: parseFloat(costPerGram.toFixed(4)),
-    retailPerGram: parseFloat(retailPerGram.toFixed(4)),
-    totalRetailPrice,
-    markup: markupPercentage,
-  };
-}
+import { calculateRetailPrice } from '@/lib/pricing';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const product = await prisma.product.findUnique({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id) },
       include: {
         stock: true,
         mediaFiles: {
@@ -69,13 +49,14 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
 
     const product = await prisma.product.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id) },
       data: body,
     });
 
@@ -91,12 +72,13 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Soft delete by setting isActive to false
     await prisma.product.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id) },
       data: { isActive: false },
     });
 

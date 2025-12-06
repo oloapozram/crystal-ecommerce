@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { calculateRetailPrice } from '@/lib/pricing';
+import { AddToCartButton } from '@/components/products/add-to-cart-button';
 
 export const metadata = {
   title: 'Shop Crystals | Crystal E-Commerce',
@@ -69,13 +70,29 @@ export default async function ShopPage() {
                 <CardContent className="p-4 pt-0 text-sm text-muted-foreground line-clamp-2">
                   Authentic {product.qualityGrade.toLowerCase()} quality {product.baseName}.
                 </CardContent>
-                <CardFooter className="p-4 pt-2 flex items-center justify-between">
-                  <span className="font-bold text-lg">
-                    ${pricing.totalRetailPrice.toFixed(2)}
-                  </span>
-                  <Badge className="bg-primary hover:bg-primary/90">
-                    View Details
-                  </Badge>
+                <CardFooter className="p-4 pt-2 flex flex-col gap-2">
+                  <div className="flex items-center justify-between w-full">
+                    <span className="font-bold text-lg">
+                      ${pricing.totalRetailPrice.toFixed(2)}
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      {product.stock?.quantityAvailable || 0} in stock
+                    </Badge>
+                  </div>
+                  <AddToCartButton
+                    product={{
+                      id: product.id,
+                      sku: product.sku,
+                      name: `${product.baseName} ${product.sizeMm}mm ${product.qualityGrade}`,
+                      baseName: product.baseName,
+                      size: Number(product.sizeMm),
+                      quality: product.qualityGrade,
+                      element: product.baziElement,
+                      retailPrice: pricing.totalRetailPrice,
+                      stockAvailable: product.stock?.quantityAvailable || 0,
+                      primaryImage: product.mediaFiles[0]?.filePath || null,
+                    }}
+                  />
                 </CardFooter>
               </Card>
             </Link>

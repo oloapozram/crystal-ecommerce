@@ -3,10 +3,11 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const quote = await prisma.supplierQuote.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt(id) },
     include: {
       supplier: true,
       product: true,
@@ -23,12 +24,13 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const body = await request.json();
 
   const quote = await prisma.supplierQuote.update({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt(id) },
     data: {
       ...body,
       ...(body.expiresAt && { expiresAt: new Date(body.expiresAt) }),
@@ -45,10 +47,11 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   await prisma.supplierQuote.delete({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt(id) },
   });
 
   return NextResponse.json({ success: true });

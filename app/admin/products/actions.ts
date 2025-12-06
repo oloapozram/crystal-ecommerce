@@ -64,6 +64,50 @@ export async function createProduct(prevState: any, formData: FormData) {
     redirect("/admin/products")
 }
 
+export async function updateProduct(id: number, prevState: any, formData: FormData) {
+    const rawData = Object.fromEntries(formData.entries())
+    const validatedFields = productSchema.safeParse(rawData)
+
+    if (!validatedFields.success) {
+        return { error: "Invalid fields", issues: validatedFields.error.flatten() }
+    }
+
+    const {
+        baseName, materialId, variety, sizeMm, qualityGrade, sku, baziElement, description, metaphysicalProperties
+    } = validatedFields.data
+
+    // Parse metaphysical properties
+    const propsArray = metaphysicalProperties
+        ? metaphysicalProperties.split(',').map(s => s.trim()).filter(Boolean)
+        : []
+
+    try {
+        await prisma.product.update({
+            where: { id },
+            data: {
+                baseName,
+                materialId: materialId || null,
+                variety: variety || null,
+                sizeMm,
+                qualityGrade,
+                sku,
+                baziElement: baziElement as any,
+                description,
+                metaphysicalProperties: propsArray,
+            }
+        })
+
+        revalidatePath("/admin/products")
+        revalidatePath("/shop")
+        revalidatePath(`/admin/products/${id}`)
+    } catch (error) {
+        console.error(error)
+        return { error: "Failed to update product. SKU might be duplicate." }
+    }
+
+    redirect("/admin/products")
+}
+
 export async function deleteProduct(id: number) {
     try {
         await prisma.product.delete({ where: { id } })

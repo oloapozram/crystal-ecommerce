@@ -124,7 +124,7 @@ export async function GET(request: Request) {
           prospectValueScore: q.estimatedQualityRating / q.quotedPricePerGram,
         }));
 
-        const best = prospectScores.reduce((prev, curr) =>
+        const best = prospectScores.reduce((prev: typeof prospectScores[0], curr: typeof prospectScores[0]) =>
           curr.prospectValueScore > prev.prospectValueScore ? curr : prev
         );
 
