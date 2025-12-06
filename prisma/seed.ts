@@ -13,7 +13,7 @@ const crystalData = [
   { name: 'Selenite', element: 'METAL', properties: ['clarity', 'purification', 'spiritual_connection', 'cleansing'], description: 'White crystal for spiritual clarity and cleansing' },
   { name: 'Labradorite', element: 'WATER', properties: ['transformation', 'intuition', 'magic', 'protection'], description: 'Iridescent stone of transformation and magic' },
   { name: 'Lapis Lazuli', element: 'WATER', properties: ['wisdom', 'truth', 'communication', 'intuition'], description: 'Deep blue stone of wisdom and truth' },
-  { name: 'Tiger Eye', element: 'FIRE', properties: ['courage', 'confidence', 'protection', 'grounding'], description: 'Golden-brown stone for courage and confidence' },
+  { name: 'Tiger Eye', element: 'EARTH', properties: ['courage', 'confidence', 'protection', 'grounding'], description: 'Golden-brown stone for courage and confidence' },
   { name: 'Green Aventurine', element: 'WOOD', properties: ['prosperity', 'luck', 'heart_healing', 'growth'], description: 'Green stone of luck and prosperity' },
   { name: 'Carnelian', element: 'FIRE', properties: ['vitality', 'courage', 'creativity', 'motivation'], description: 'Orange-red stone for vitality and creativity' },
   { name: 'Amazonite', element: 'WATER', properties: ['communication', 'truth', 'harmony', 'soothing'], description: 'Turquoise stone for communication and harmony' },
@@ -24,7 +24,7 @@ const crystalData = [
   { name: 'Rhodonite', element: 'FIRE', properties: ['healing', 'love', 'compassion', 'emotional_balance'], description: 'Pink stone with black veins for emotional healing' },
   { name: 'Rhodochrosite', element: 'FIRE', properties: ['love', 'self_love', 'compassion', 'emotional_healing'], description: 'Pink banded stone of self-love' },
   { name: 'Fluorite', element: 'WATER', properties: ['clarity', 'focus', 'protection', 'mental_clarity'], description: 'Multi-colored stone for mental clarity' },
-  { name: 'Pyrite', element: 'FIRE', properties: ['abundance', 'manifestation', 'confidence', 'protection'], description: 'Golden metallic stone of abundance' },
+  { name: 'Pyrite', element: 'METAL', properties: ['abundance', 'manifestation', 'confidence', 'protection'], description: 'Golden metallic stone of abundance' },
   { name: 'Jade', element: 'WOOD', properties: ['prosperity', 'harmony', 'protection', 'longevity'], description: 'Green stone of prosperity and harmony' },
   { name: 'Blue Lace Agate', element: 'WATER', properties: ['communication', 'peace', 'calm', 'expression'], description: 'Light blue banded stone for peaceful communication' },
   { name: 'Red Jasper', element: 'FIRE', properties: ['vitality', 'strength', 'grounding', 'courage'], description: 'Red stone for vitality and strength' },
@@ -44,10 +44,21 @@ const crystalData = [
   { name: 'Tourmalinated Quartz', element: 'METAL', properties: ['protection', 'grounding', 'balance', 'clarity'], description: 'Clear quartz with black tourmaline inclusions' },
   { name: 'Kyanite', element: 'WATER', properties: ['alignment', 'communication', 'meditation', 'balance'], description: 'Blue blade-like stone for alignment' },
   { name: 'Morganite', element: 'FIRE', properties: ['love', 'compassion', 'divine_love', 'emotional_healing'], description: 'Pink beryl for divine love and compassion' },
+  { name: 'Garnet', element: 'FIRE', properties: ['passion', 'drive', 'recognition', 'vitality'], description: 'Deep red stone for passion and drive' },
+  { name: 'Yellow Calcite', element: 'EARTH', properties: ['stability', 'focus', 'nurturing', 'clarity'], description: 'Yellow stone for stability and focus' },
+  { name: 'Turquoise', element: 'WATER', properties: ['protection', 'healing', 'communication', 'wisdom'], description: 'Blue-green stone for protection and healing' },
 ];
 
 async function main() {
-  console.log('Seeding database with 40 crystal types...');
+  console.log('Seeding database with 43 crystal types...');
+
+  // Clear existing data (in reverse order of dependencies)
+  console.log('Clearing existing data...');
+  await prisma.inventoryStock.deleteMany({});
+  await prisma.inventoryPurchase.deleteMany({});
+  await prisma.product.deleteMany({});
+  await prisma.supplier.deleteMany({});
+  console.log('✓ Existing data cleared');
 
   // Create suppliers
   const fafa = await prisma.supplier.create({
@@ -83,9 +94,9 @@ async function main() {
       data: {
         baseName: crystal.name,
         sizeMm: 10.00,
-        qualityGrade: 'NORMAL',
+        qualityGrade: 'NORMAL' as const,
         sku: `${crystal.name.toUpperCase().replace(/['\s]/g, '-')}-10MM-NORMAL`,
-        baziElement: crystal.element,
+        baziElement: crystal.element as any,
         metaphysicalProperties: crystal.properties,
         description: crystal.description,
         isActive: true,

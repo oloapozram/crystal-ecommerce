@@ -197,7 +197,7 @@ Return ONLY valid JSON (no markdown, no code blocks):
             productId: productId,
             contentType: 'BAZI_SELLING_COPY',
             userBaziChartHash: chartHash,
-            generatedContent: result,
+            generatedContent: result as any,
             sourceFactsUsed: result.source_facts_used,
             confidenceScore: result.confidence_score,
             humanVerified: false

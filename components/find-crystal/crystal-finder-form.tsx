@@ -96,7 +96,7 @@ export function CrystalFinderForm() {
                     <div className="text-center mb-8">
                         <h2 className="text-3xl font-bold mb-2">Tell us about yourself</h2>
                         <p className="text-muted-foreground">
-                            We'll use your birth information to calculate your unique energy profile
+                            We&apos;ll use your birth information to calculate your unique energy profile
                         </p>
                     </div>
 
@@ -123,7 +123,7 @@ export function CrystalFinderForm() {
                                 onChange={(e) => setFormData(prev => ({ ...prev, birthTime: e.target.value }))}
                             />
                             <p className="text-xs text-muted-foreground">
-                                Don't know your birth time? That's okay! We can still help.
+                                Don&apos;t know your birth time? That&apos;s okay! We can still help.
                             </p>
                         </div>
                     </div>

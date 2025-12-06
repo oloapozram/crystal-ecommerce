@@ -15,7 +15,7 @@ async function listModels() {
         const result = await model.generateContent('Hello');
         console.log('Success with gemini-pro:', await result.response.text());
     } catch (e) {
-        console.log('Error with gemini-pro:', e.message);
+        console.log('Error with gemini-pro:', (e as Error).message);
     }
 
     try {
@@ -24,7 +24,7 @@ async function listModels() {
         const result = await model.generateContent('Hello');
         console.log('Success with gemini-1.5-flash:', await result.response.text());
     } catch (e) {
-        console.log('Error with gemini-1.5-flash:', e.message);
+        console.log('Error with gemini-1.5-flash:', (e as Error).message);
     }
 }
 

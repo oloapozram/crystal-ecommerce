@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { productSchema, ProductFormValues } from "@/lib/validations/product"
-import { createProduct } from "@/app/admin/products/actions"
+import { createProduct, updateProduct } from "@/app/admin/products/actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -13,16 +13,17 @@ interface CrystalMaterial {
     id: number
     name: string
     baziElement: string
-    defaultProperties: string[]
+    defaultProperties: any // JsonValue from Prisma
     chakra: string | null
     color: string | null
 }
 
 interface ProductFormProps {
     materials: CrystalMaterial[]
+    product?: any // TODO: Type this properly with Prisma types
 }
 
-export function ProductForm({ materials }: ProductFormProps) {
+export function ProductForm({ materials, product }: ProductFormProps) {
     const [error, setError] = useState<string>("")
     const [selectedMaterialId, setSelectedMaterialId] = useState<number | null>(null)
 
@@ -33,13 +34,21 @@ export function ProductForm({ materials }: ProductFormProps) {
         watch,
         formState: { errors, isSubmitting },
     } = useForm<ProductFormValues>({
-        resolver: zodResolver(productSchema),
+        resolver: zodResolver(productSchema) as any,
         defaultValues: {
-            qualityGrade: "NORMAL",
+            baseName: product?.baseName || "",
+            materialId: product?.materialId ? Number(product.materialId) : undefined,
+            variety: product?.variety || "",
+            sizeMm: product?.sizeMm ? Number(product.sizeMm) : undefined,
+            qualityGrade: product?.qualityGrade || "NORMAL",
+            sku: product?.sku || "",
+            baziElement: product?.baziElement || undefined,
+            metaphysicalProperties: product?.metaphysicalProperties?.join(", ") || "",
+            description: product?.description || "",
             initialQuantity: 0,
             initialWeightGrams: 0,
             initialCostPerGram: 0,
-        }
+        } as ProductFormValues
     })
 
     // Watch material selection
@@ -66,7 +75,13 @@ export function ProductForm({ materials }: ProductFormProps) {
             }
         })
 
-        const result = await createProduct(null, formData)
+        let result
+        if (product) {
+            result = await updateProduct(product.id, null, formData)
+        } else {
+            result = await createProduct(null, formData)
+        }
+
         if (result?.error) {
             setError(result.error)
         }
@@ -129,7 +144,7 @@ export function ProductForm({ materials }: ProductFormProps) {
                                     {selectedMaterial.chakra && ` • Chakra: ${selectedMaterial.chakra}`}
                                 </p>
                                 <div className="flex flex-wrap gap-2">
-                                    {selectedMaterial.defaultProperties.map((prop, i) => (
+                                    {Array.isArray(selectedMaterial.defaultProperties) && selectedMaterial.defaultProperties.map((prop: string, i: number) => (
                                         <span key={i} className="text-xs px-2 py-1 bg-background rounded-full border">
                                             {prop}
                                         </span>
@@ -148,7 +163,7 @@ export function ProductForm({ materials }: ProductFormProps) {
                     <Input id="baseName" {...register("baseName")} placeholder="e.g. Dream Amethyst" />
                     {errors.baseName && <p className="text-sm text-red-500">{errors.baseName.message}</p>}
                     <p className="text-xs text-muted-foreground">
-                        Tip: Use format "[Variety] [Material]" or just "[Material]"
+                        Tip: Use format &quot;[Variety] [Material]&quot; or just &quot;[Material]&quot;
                     </p>
                 </div>
 
@@ -225,27 +240,29 @@ export function ProductForm({ materials }: ProductFormProps) {
                 {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
             </div>
 
-            {/* Initial Inventory */}
-            <div className="border-t pt-6 mt-6">
-                <h3 className="text-lg font-medium mb-4">Initial Inventory (Optional)</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="initialQuantity">Initial Quantity</Label>
-                        <Input id="initialQuantity" type="number" {...register("initialQuantity")} />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="initialWeightGrams">Weight (grams)</Label>
-                        <Input id="initialWeightGrams" type="number" step="0.1" {...register("initialWeightGrams")} />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="initialCostPerGram">Cost Per Gram ($)</Label>
-                        <Input id="initialCostPerGram" type="number" step="0.01" {...register("initialCostPerGram")} />
+            {/* Initial Inventory - Only show when creating new product */}
+            {!product && (
+                <div className="border-t pt-6 mt-6">
+                    <h3 className="text-lg font-medium mb-4">Initial Inventory (Optional)</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="initialQuantity">Initial Quantity</Label>
+                            <Input id="initialQuantity" type="number" {...register("initialQuantity")} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="initialWeightGrams">Weight (grams)</Label>
+                            <Input id="initialWeightGrams" type="number" step="0.1" {...register("initialWeightGrams")} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="initialCostPerGram">Cost Per Gram ($)</Label>
+                            <Input id="initialCostPerGram" type="number" step="0.01" {...register("initialCostPerGram")} />
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             <Button type="submit" disabled={isSubmitting} size="lg">
-                {isSubmitting ? "Saving..." : "Create Product"}
+                {isSubmitting ? "Saving..." : (product ? "Update Product" : "Create Product")}
             </Button>
         </form>
     )

@@ -71,18 +71,30 @@ const config: Config = {
   			}
   		},
   		fontFamily: {
-  			heading: 'themeConfig.typography.fontFamily.heading.split(",")',
-  			body: 'themeConfig.typography.fontFamily.body.split(",")',
-  			accent: 'themeConfig.typography.fontFamily.accent.split(",")',
-  			mono: 'themeConfig.typography.fontFamily.mono.split(",")'
+  			heading: themeConfig.typography.fontFamily.heading.split(","),
+  			body: themeConfig.typography.fontFamily.body.split(","),
+  			accent: themeConfig.typography.fontFamily.accent.split(","),
+  			mono: themeConfig.typography.fontFamily.mono.split(",")
   		},
-  		fontSize: 'themeConfig.typography.fontSize',
+  		fontSize: themeConfig.typography.fontSize,
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
-  		boxShadow: 'themeConfig.shadows'
+  		boxShadow: {
+  			sm: themeConfig.shadows.sm,
+  			md: themeConfig.shadows.md,
+  			lg: themeConfig.shadows.lg,
+  			xl: themeConfig.shadows.xl,
+  			'2xl': themeConfig.shadows['2xl'],
+  			inner: themeConfig.shadows.inner,
+  			'glow-wood': themeConfig.shadows.glow.wood,
+  			'glow-fire': themeConfig.shadows.glow.fire,
+  			'glow-earth': themeConfig.shadows.glow.earth,
+  			'glow-metal': themeConfig.shadows.glow.metal,
+  			'glow-water': themeConfig.shadows.glow.water,
+  		}
   	}
   },
   plugins: [require("tailwindcss-animate")],
