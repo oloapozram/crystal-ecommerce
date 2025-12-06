@@ -104,18 +104,22 @@ model InventoryStock {
 }
 
 model MediaFile {
-  id           Int      @id @default(autoincrement())
-  productId    Int      @map("product_id")
-  filePath     String   @map("file_path") @db.VarChar(500)
-  fileType     FileType @map("file_type")
-  isPrimary    Boolean  @default(false) @map("is_primary")
-  platformTags Json?    @map("platform_tags")
-  displayOrder Int      @default(0) @map("display_order")
-  createdAt    DateTime @default(now()) @map("created_at")
+  id           Int            @id @default(autoincrement())
+  productId    Int            @map("product_id")
+  filePath     String?        @map("file_path") @db.VarChar(500)
+  externalUrl  String?        @map("external_url") @db.VarChar(1000)
+  platform     MediaPlatform  @default(LOCAL)
+  fileType     FileType       @map("file_type")
+  isPrimary    Boolean        @default(false) @map("is_primary")
+  platformTags Json?          @map("platform_tags")
+  displayOrder Int            @default(0) @map("display_order")
+  caption      String?        @db.VarChar(500)
+  createdAt    DateTime       @default(now()) @map("created_at")
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
+  @@index([platform])
   @@map("media_files")
 }
 
@@ -155,6 +159,16 @@ enum BaziElement {
 enum FileType {
   IMAGE @map("image")
   VIDEO @map("video")
+}
+
+enum MediaPlatform {
+  LOCAL      @map("local")
+  INSTAGRAM  @map("instagram")
+  TIKTOK     @map("tiktok")
+  YOUTUBE    @map("youtube")
+  FACEBOOK   @map("facebook")
+  TWITTER    @map("twitter")
+  OTHER      @map("other")
 }
 
 enum ContentType {
