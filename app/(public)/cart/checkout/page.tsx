@@ -19,6 +19,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { FormErrorSummary } from '@/components/ui/form-error-summary';
+import { OptionalBadge } from '@/components/ui/required-indicator';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
 // Checkout form validation schema
@@ -122,6 +124,8 @@ export default function CheckoutPage() {
 
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormErrorSummary errors={form.formState.errors} />
+
                 <FormField
                   control={form.control}
                   name="customerName"
@@ -159,7 +163,10 @@ export default function CheckoutPage() {
                   name="customerPhone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number (Optional)</FormLabel>
+                      <FormLabel>
+                        Phone Number
+                        <OptionalBadge />
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="tel"
@@ -177,7 +184,10 @@ export default function CheckoutPage() {
                   name="customerMessage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Message (Optional)</FormLabel>
+                      <FormLabel>
+                        Message
+                        <OptionalBadge />
+                      </FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Any special requests or notes..."
