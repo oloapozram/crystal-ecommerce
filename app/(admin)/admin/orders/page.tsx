@@ -21,6 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { OrderTableSkeleton } from '@/components/admin/order-table-skeleton';
 
 interface Order {
   id: number;
@@ -162,7 +163,7 @@ export default function AdminOrdersPage() {
 
       {/* Orders Table */}
       {loading ? (
-        <div className="text-center py-12">Loading orders...</div>
+        <OrderTableSkeleton />
       ) : orders.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           No orders found
