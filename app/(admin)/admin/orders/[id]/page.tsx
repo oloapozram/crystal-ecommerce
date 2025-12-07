@@ -21,6 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
 
 interface OrderItem {
@@ -77,6 +78,7 @@ export default function AdminOrderDetailPage({
   params: { id: string };
 }) {
   const router = useRouter();
+  const { toast } = useToast();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -125,10 +127,17 @@ export default function AdminOrderDetailPage({
 
       const updatedOrder = await response.json();
       setOrder(updatedOrder);
-      alert('Order status updated successfully');
+      toast({
+        title: 'Success',
+        description: 'Order status updated successfully',
+      });
     } catch (error) {
       console.error('Error updating order:', error);
-      alert('Failed to update order status');
+      toast({
+        title: 'Error',
+        description: 'Failed to update order status',
+        variant: 'destructive',
+      });
     } finally {
       setUpdating(false);
     }
