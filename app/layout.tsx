@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond, Cinzel } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/navigation/header";
+import { Footer } from "@/components/navigation/footer";
+import { Toaster } from "@/components/ui/toaster";
 import { CartProvider } from "@/lib/cart/cart-context";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -28,10 +30,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${cormorant.variable} ${cinzel.variable}`}>
-      <body className="font-body bg-background text-text antialiased">
+      <body className="font-body bg-background text-text antialiased flex flex-col min-h-screen">
         <CartProvider>
           <Header />
-          {children}
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <Toaster />
         </CartProvider>
       </body>
     </html>

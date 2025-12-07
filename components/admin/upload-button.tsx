@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 interface UploadButtonProps {
   productId: number;
@@ -11,6 +12,7 @@ interface UploadButtonProps {
 
 export function UploadButton({ productId, onUploadComplete }: UploadButtonProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const { toast } = useToast();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -37,15 +39,26 @@ export function UploadButton({ productId, onUploadComplete }: UploadButtonProps)
       const result = await response.json();
 
       if (result.errors && result.errors.length > 0) {
-        alert(`Some files failed to upload:\n${result.errors.map((e: any) => `- ${e.filename}: ${e.error}`).join('\n')}`);
+        toast({
+          title: 'Partial Upload',
+          description: `${result.files.length} file(s) uploaded. ${result.errors.length} failed.`,
+          variant: 'destructive',
+        });
       } else {
-        alert(`${result.files.length} file(s) uploaded successfully`);
+        toast({
+          title: 'Success',
+          description: `${result.files.length} file(s) uploaded successfully`,
+        });
       }
 
       onUploadComplete();
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload files');
+      toast({
+        title: 'Error',
+        description: 'Failed to upload files',
+        variant: 'destructive',
+      });
     } finally {
       setIsUploading(false);
       e.target.value = '';

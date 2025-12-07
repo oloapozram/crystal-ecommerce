@@ -6,6 +6,7 @@ import { Trash2, ExternalLink, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 import { UploadButton } from './upload-button';
 import { ExternalMediaForm } from './external-media-form';
 
@@ -27,6 +28,7 @@ export function MediaManager({ productId }: MediaManagerProps) {
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showExternalForm, setShowExternalForm] = useState(false);
+  const { toast } = useToast();
 
   const fetchMedia = async () => {
     try {
@@ -36,7 +38,11 @@ export function MediaManager({ productId }: MediaManagerProps) {
       setMediaFiles(data);
     } catch (error) {
       console.error('Fetch media error:', error);
-      alert('Failed to load media files');
+      toast({
+        title: 'Error',
+        description: 'Failed to load media files',
+        variant: 'destructive',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -57,11 +63,18 @@ export function MediaManager({ productId }: MediaManagerProps) {
 
       if (!response.ok) throw new Error('Failed to delete');
 
-      alert('Media deleted successfully');
+      toast({
+        title: 'Success',
+        description: 'Media deleted successfully',
+      });
       fetchMedia();
     } catch (error) {
       console.error('Delete error:', error);
-      alert('Failed to delete media');
+      toast({
+        title: 'Error',
+        description: 'Failed to delete media',
+        variant: 'destructive',
+      });
     }
   };
 

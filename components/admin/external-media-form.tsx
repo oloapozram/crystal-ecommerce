@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useToast } from '@/hooks/use-toast';
 
 interface ExternalMediaFormProps {
   productId: number;
@@ -19,6 +20,7 @@ interface ExternalMediaFormProps {
 
 export function ExternalMediaForm({ productId, onSuccess, onCancel }: ExternalMediaFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const {
     register,
@@ -50,11 +52,18 @@ export function ExternalMediaForm({ productId, onSuccess, onCancel }: ExternalMe
         throw new Error(error.error || 'Failed to add media');
       }
 
-      alert('Social media link added successfully');
+      toast({
+        title: 'Success',
+        description: 'Social media link added successfully',
+      });
       onSuccess();
     } catch (error) {
       console.error('Add media error:', error);
-      alert('Failed to add social media link');
+      toast({
+        title: 'Error',
+        description: 'Failed to add social media link',
+        variant: 'destructive',
+      });
     } finally {
       setIsSubmitting(false);
     }
