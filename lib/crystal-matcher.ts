@@ -1,6 +1,7 @@
 import { prisma } from "./prisma"
 import { BaziElement } from "@prisma/client"
-import { calculateBaziChart, analyzeBaziBalance, SimplifiedBaziChart } from "./bazi-calculator"
+import { AdvancedBaziCalculator } from "./bazi/advanced-calculator"
+import { analyzeBaziChart } from "./bazi/analyzer"
 import { getBeneficialElementsForConcerns } from "./concern-mappings"
 import { generateCrystalMatchExplanation } from "./ai-generators"
 
@@ -19,18 +20,43 @@ export interface CrystalMatch {
     aiExplanation: string
 }
 
+// Interface for backward compatibility with frontend
+export interface LegacyBaziChart {
+    yearElement: BaziElement
+    dayElement: BaziElement
+    dominantElement: BaziElement
+    deficientElements: BaziElement[]
+    excessElements: BaziElement[]
+    animalSign: string
+}
+
 /**
  * Main crystal matching function
  * Combines Bazi analysis + user concerns to recommend crystals
  */
 export async function matchCrystals(input: CrystalMatchInput): Promise<{
     matches: CrystalMatch[]
-    baziChart: SimplifiedBaziChart
+    baziChart: LegacyBaziChart
     baziSummary: string
 }> {
-    // Step 1: Calculate Bazi chart
-    const baziChart = calculateBaziChart(input.birthDate)
-    const baziAnalysis = analyzeBaziBalance(baziChart)
+    // Step 1: Calculate Bazi chart using Advanced Calculator
+    const calculator = new AdvancedBaziCalculator()
+    const birthHour = input.birthTime ? input.birthTime.hour : 12 // Default to noon if unknown
+
+    // Note: AdvancedBaziCalculator takes Date object for birth date
+    // We assume the date passed is correct local date
+    const chart = calculator.calculate(input.birthDate, birthHour)
+    const analysis = analyzeBaziChart(chart)
+
+    // Create legacy chart structure for frontend and AI generator compatibility
+    const legacyChart: LegacyBaziChart = {
+        yearElement: chart.year.stemElement,
+        dayElement: chart.day.stemElement,
+        dominantElement: analysis.dominantElement,
+        deficientElements: analysis.missingElements,
+        excessElements: [], // Not really used in new logic, empty for now
+        animalSign: chart.animalSign
+    }
 
     // Step 2: Get beneficial elements from concerns
     const concernElements = getBeneficialElementsForConcerns(input.concerns)
@@ -38,8 +64,9 @@ export async function matchCrystals(input: CrystalMatchInput): Promise<{
     // Step 3: Combine Bazi + concern elements (weighted)
     const elementScores = new Map<BaziElement, number>()
 
-    // Bazi deficient elements get high priority (weight: 3)
-    baziAnalysis.beneficialElements.forEach(element => {
+    // Bazi beneficial elements get high priority (weight: 3)
+    // These include missing elements and balancing elements
+    analysis.beneficialElements.forEach(element => {
         elementScores.set(element, (elementScores.get(element) || 0) + 3)
     })
 
@@ -49,13 +76,13 @@ export async function matchCrystals(input: CrystalMatchInput): Promise<{
     })
 
     // Step 4: Query products matching beneficial elements
-    const beneficialElements = Array.from(elementScores.keys())
+    const beneficialElementsList = Array.from(elementScores.keys())
 
     const products = await prisma.product.findMany({
         where: {
             isActive: true,
             baziElement: {
-                in: beneficialElements
+                in: beneficialElementsList
             },
             stock: {
                 quantityAvailable: {
@@ -80,29 +107,37 @@ export async function matchCrystals(input: CrystalMatchInput): Promise<{
 
         // Score based on element match
         const elementScore = elementScores.get(product.baziElement!) || 0
-        score += elementScore * 20 // Max 60 points from element
+        score += elementScore * 20 // Max 60-100 points base
 
-        if (baziChart.deficientElements.includes(product.baziElement!)) {
-            reasons.push(`Balances your ${product.baziElement!.toLowerCase()} deficiency`)
+        if (analysis.beneficialElements.includes(product.baziElement!)) {
+            if (analysis.missingElements.includes(product.baziElement!)) {
+                reasons.push(`Restores your missing ${product.baziElement!.toLowerCase()} energy`)
+            } else {
+                reasons.push(`Balances your energy profile`)
+            }
         }
 
         if (concernElements.includes(product.baziElement!)) {
-            reasons.push(`Supports your intentions`)
+            reasons.push(`Supports your intention: ${input.concerns[0]}`)
         }
 
         // Bonus for high quality
         if (product.qualityGrade === "HIGH") {
             score += 10
-            reasons.push("Premium quality")
+            reasons.push("Premium quality crystal")
         } else if (product.qualityGrade === "GOOD") {
             score += 5
         }
+
+        // Bonus for animal sign compatibility (simplified)
+        // If product element produces User's Year Animal element? 
+        // Let's skip deep compatibility for now to keep it fast
 
         return {
             productId: product.id,
             product,
             compatibilityScore: Math.min(100, score),
-            reasons,
+            reasons: [...new Set(reasons)], // Deduplicate
             aiExplanation: "" // Will be filled in next step
         }
     })
@@ -118,7 +153,7 @@ export async function matchCrystals(input: CrystalMatchInput): Promise<{
             try {
                 const explanation = await generateCrystalMatchExplanation(
                     match.product,
-                    baziChart,
+                    legacyChart,
                     input.concerns
                 )
                 return {
@@ -138,7 +173,7 @@ export async function matchCrystals(input: CrystalMatchInput): Promise<{
 
     return {
         matches: matchesWithAI,
-        baziChart,
-        baziSummary: baziAnalysis.summary
+        baziChart: legacyChart,
+        baziSummary: analysis.summary
     }
 }
