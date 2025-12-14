@@ -9,8 +9,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 password: { label: "Password", type: "password" },
             },
             authorize: async (credentials) => {
-                const adminUser = process.env.ADMIN_USERNAME || "admin";
-                const adminPass = process.env.ADMIN_PASSWORD || "admin123";
+                // Require environment variables for admin credentials
+                const adminUser = process.env.ADMIN_USERNAME;
+                const adminPass = process.env.ADMIN_PASSWORD;
+
+                if (!adminUser || !adminPass) {
+                    console.error("ADMIN_USERNAME and ADMIN_PASSWORD must be set in environment variables");
+                    throw new Error("Admin credentials not configured");
+                }
 
                 if (
                     credentials.username === adminUser &&
