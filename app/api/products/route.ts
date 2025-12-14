@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { auth } from '@/lib/auth';
+import { productSchema } from '@/lib/validations/product';
 
 export async function GET(request: Request) {
   try {
@@ -78,23 +80,41 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    // Authentication check
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
+
+    // Validate input
+    const validatedData = productSchema.parse(body);
 
     const product = await prisma.product.create({
       data: {
-        baseName: body.baseName,
-        sizeMm: body.sizeMm,
-        qualityGrade: body.qualityGrade,
-        sku: body.sku || generateSKU(body.baseName, body.sizeMm, body.qualityGrade),
-        baziElement: body.baziElement,
-        metaphysicalProperties: body.metaphysicalProperties,
-        description: body.description,
+        baseName: validatedData.baseName,
+        sizeMm: validatedData.sizeMm,
+        qualityGrade: validatedData.qualityGrade,
+        sku: validatedData.sku || generateSKU(validatedData.baseName, validatedData.sizeMm, validatedData.qualityGrade),
+        baziElement: validatedData.baziElement,
+        metaphysicalProperties: validatedData.metaphysicalProperties,
+        description: validatedData.description,
       },
     });
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     console.error('Error creating product:', error);
+    if (error instanceof Error && error.name === 'ZodError') {
+      return NextResponse.json(
+        { error: 'Invalid input data' },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
       { error: 'Failed to create product' },
       { status: 500 }

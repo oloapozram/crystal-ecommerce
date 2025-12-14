@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('Error generating Bazi selling copy:', error);
         return NextResponse.json(
-            { error: error instanceof Error ? error.message : 'Failed to generate content' },
+            { error: 'Failed to generate content' },
             { status: 500 }
         );
     }

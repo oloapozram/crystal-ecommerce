@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { auth } from '@/lib/auth';
 import { updateOrderStatusSchema } from '@/lib/validation/order';
 
 /**
@@ -11,6 +12,15 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Authentication check
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const orderId = parseInt(params.id, 10);
 
     if (isNaN(orderId)) {
@@ -71,6 +81,15 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Authentication check
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const orderId = parseInt(params.id, 10);
 
     if (isNaN(orderId)) {
@@ -141,20 +160,9 @@ export async function PATCH(
     return NextResponse.json(updatedOrder);
   } catch (error) {
     console.error('Error updating order:', error);
-
-    if (error instanceof Error) {
-      return NextResponse.json(
-        {
-          error: 'Order update failed',
-          message: error.message,
-        },
-        { status: 400 }
-      );
-    }
-
     return NextResponse.json(
       {
-        error: 'Internal server error',
+        error: 'Failed to update order',
       },
       { status: 500 }
     );

@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('Error generating video prompt:', error);
         return NextResponse.json(
-            { error: error instanceof Error ? error.message : 'Failed to generate content' },
+            { error: 'Failed to generate video content' },
             { status: 500 }
         );
     }

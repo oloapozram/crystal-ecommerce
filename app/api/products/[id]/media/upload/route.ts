@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { auth } from '@/lib/auth';
 import { saveUploadedFile, validateImageFile } from '@/lib/upload-handler';
 
 export async function POST(
@@ -7,6 +8,15 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Authentication check
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const productId = parseInt(params.id);
 
     // Verify product exists
